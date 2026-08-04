@@ -1,0 +1,63 @@
+/* Seam #5 — design tokens. Restyle the whole deck by editing this file.
+   Built on sf-palette.css (SF-themed fills, each with a WCAG-checked text pairing).
+   Per-card hue is one attribute on the card: <card-x data-hue="camera"> ... */
+
+@import "sf-palette.css";
+
+:root {
+  color-scheme: dark;
+
+  /* ---- base surface (the "ink" the story sits on) ---- */
+  --ink:        #14171a;               /* near-black base (from palette explorer) */
+  --ink-2:      #1e2226;               /* raised surface */
+  --paper:      #eef1f4;               /* default text on ink */
+  --muted:      #aab2ba;               /* secondary text */
+  --hairline:   color-mix(in srgb, var(--paper) 14%, transparent);
+
+  /* ---- hot accents (superlatives, highlights) ---- */
+  --hot:        var(--sf-sunset-coral);   /* #E9764F */
+  --cool:       var(--sf-bay-teal);       /* #2E8B8B */
+  --gold:       var(--sf-imperial-gold);  /* #E0A526 */
+
+  /* ---- type: three roles (§ design system). Fonts TBD — system stacks stand in.
+     TODO: swap --font-display for a Druk-like condensed, --font-mono for a grotesk mono. */
+  --font-display: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif; /* giant condensed heavy */
+  --font-mono:    ui-monospace, "SF Mono", Menlo, monospace;                      /* letter-spaced kickers */
+  --font-body:    system-ui, -apple-system, "Segoe UI", sans-serif;              /* plain bold sans */
+
+  /* fluid type scale */
+  --step-hero:  clamp(3.5rem, 16vw, 9rem);
+  --step-xl:    clamp(2rem, 8vw, 4rem);
+  --step-l:     clamp(1.5rem, 5vw, 2.5rem);
+  --step-body:  clamp(1rem, 2.5vw, 1.25rem);
+  --step-kicker: clamp(0.75rem, 2vw, 0.95rem);
+
+  /* spacing / shape */
+  --gap:      clamp(1rem, 4vw, 2.5rem);
+  --pad:      clamp(1.25rem, 6vw, 4rem);
+  --radius:   16px;
+  --chip-radius: 999px;
+
+  /* motion tokens (durations/eases — read by the motion registry) */
+  --dur-fast:  260ms;
+  --dur:       520ms;
+  --dur-slow:  900ms;
+  --dur-count: 620ms;   /* number count-up — short so it "flips" to the value, then settles */
+  --ease-out-back: cubic-bezier(.22,1.2,.36,1);   /* gentle overshoot */
+  --ease-out:      cubic-bezier(.16,1,.3,1);
+
+  /* default card hue = the ink base */
+  --card-bg: var(--ink);
+  --card-fg: var(--paper);
+  --card-accent: var(--hot);
+}
+
+/* ---- per-card hue floods (each pairs an SF fill with its AA-safe text) ---- */
+[data-hue="ink"]       { --card-bg: var(--ink);                  --card-fg: var(--paper);      --card-accent: var(--hot); }
+[data-hue="camera"]    { --card-bg: var(--sf-bay-blue);          --card-fg: var(--sf-on-dark);  --card-accent: var(--gold); }
+[data-hue="algorithm"] { --card-bg: var(--sf-imperial-gold);     --card-fg: var(--sf-on-light); --card-accent: var(--sf-cable-car-maroon); }
+[data-hue="crowd"]     { --card-bg: var(--sf-presidio-green);    --card-fg: var(--sf-on-dark);  --card-accent: var(--sf-golden-hills); }
+[data-hue="turf"]      { --card-bg: var(--sf-international-orange);--card-fg: var(--sf-on-dark); --card-accent: var(--sf-warriors-gold); }
+[data-hue="tenderloin"]{ --card-bg: var(--sf-cable-car-maroon);  --card-fg: var(--sf-on-dark);  --card-accent: var(--sf-sunset-coral); }
+[data-hue="equity"]    { --card-bg: var(--sf-bay-teal);          --card-fg: var(--sf-on-dark);  --card-accent: var(--sf-imperial-gold); }
+[data-hue="bone"]      { --card-bg: var(--sf-painted-lady-bone); --card-fg: var(--sf-on-light); --card-accent: var(--sf-cable-car-maroon); }

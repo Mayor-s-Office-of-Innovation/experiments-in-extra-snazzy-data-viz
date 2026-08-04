@@ -1,0 +1,43 @@
+/* San Francisco color palette — design tokens
+   Landmarks, bay & nature, and team accents. Contrast notes are for the
+   listed text color on that fill (WCAG 2.2: AA ≥ 4.5:1, AA Large ≥ 3:1). */
+
+:root {
+  /* Core anchors */
+  --sf-international-orange: #D33F00; /* Golden Gate Bridge; official CMYK 0/69/100/6 (#F04A00) deepened for white-text AA — white text, AA */
+  --sf-fog:                 #B8BFC6; /* SF fog — black text, AA */
+  --sf-fog-shadow:          #5C666F; /* deep gray, text/contrast — white text, AA */
+
+  /* Bay & nature */
+  --sf-bay-blue:       #1B6CA8; /* the water — white text, AA */
+  --sf-bay-teal:       #2E8B8B; /* greener bay tones — white text, AA Large */
+  --sf-presidio-green: #3E6B4F; /* cypress / park greenery — white text, AA */
+  --sf-golden-hills:   #C9A24B; /* dry summer hills — black text, AA */
+  --sf-sunset-coral:   #E9764F; /* fog-lit sunsets — black text, AA */
+
+  /* Landmarks & culture */
+  --sf-cable-car-maroon:  #7A1F2B; /* Muni cable cars — white text, AA */
+  --sf-chinatown-red:     #C8102E; /* lanterns / gates — white text, AA */
+  --sf-imperial-gold:     #E0A526; /* Chinatown accents — black text, AA */
+  --sf-painted-lady-bone: #E7C8A0; /* Victorian trim — black text, AA */
+  --sf-sourdough-crust:   #D8B487; /* a very SF neutral — black text, AA */
+
+  /* Team accents */
+  --sf-giants-orange: #FD5A1E; /* SF Giants — black text, AA Large */
+  --sf-warriors-blue: #1D428A; /* Golden State Warriors — white text, AA */
+  --sf-warriors-gold: #FFC72C; /* Golden State Warriors — black text, AA */
+  --sf-niner-red:     #AA0000; /* SF 49ers — white text, AA */
+  --sf-niner-gold:    #B3995D; /* SF 49ers — black text, AA Large */
+
+  /* ---- Suggested tight palette (semantic aliases) ---- */
+  --sf-primary:   var(--sf-international-orange); /* on-fill: white */
+  --sf-secondary: var(--sf-bay-blue);            /* on-fill: white */
+  --sf-accent:    var(--sf-imperial-gold);       /* on-fill: black */
+  --sf-support:   var(--sf-presidio-green);      /* on-fill: white */
+  --sf-light:     #B8BFC6;                        /* fog — light neutral */
+  --sf-dark:      #2B2F33;                        /* near-black — body text */
+
+  /* Readable text colors to pair with fills */
+  --sf-on-dark:  #FFFFFF; /* use on primary / secondary / support / maroons / niner-red */
+  --sf-on-light: #2B2F33; /* use on accent / golds / bones / fog */
+}

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>San Francisco — Color Palette</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #14171a;
+    --surface: #1e2226;
+    --text: #eef1f4;
+    --muted: #aab2ba;
+    --border: color-mix(in srgb, var(--text) 14%, transparent);
+    --radius: 14px;
+    --gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 1rem/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  header { max-width: 60ch; margin-block-end: 2.5rem; }
+  h1 { font-size: clamp(1.75rem, 5vw, 2.75rem); line-height: 1.1; margin: 0 0 0.5rem; }
+  header p { color: var(--muted); margin: 0; }
+
+  h2 {
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2.5rem 0 1rem;
+    padding-block-end: 0.5rem;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--gap);
+  }
+
+  .swatch {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chip {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: flex-end;
+    padding: 0.75rem;
+    font-weight: 600;
+    /* --fill and --on set inline per swatch */
+    background: var(--fill);
+    color: var(--on);
+  }
+  .chip .name { font-size: 1.05rem; }
+
+  .meta { padding: 0.75rem; display: grid; gap: 0.5rem; }
+  .source { color: var(--muted); font-size: 0.85rem; margin: 0; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .copy {
+    font: inherit;
+    font-size: 0.9rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.35rem 0.6rem;
+    cursor: pointer;
+  }
+  .copy:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
+  .copy:focus-visible { outline: 2px solid #7cb7ff; outline-offset: 2px; }
+  .copy[data-copied="true"] { border-color: #4caf7d; color: #7fe0ad; }
+
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.45rem;
+    border-radius: 6px;
+    border: 1px solid currentColor;
+  }
+  .badge.pass { color: #7fe0ad; }
+  .badge.large { color: #ffcf6b; }
+  .badge.fail { color: #ff9b8f; }
+  .ratio { font-family: ui-monospace, Menlo, monospace; font-size: 0.8rem; color: var(--muted); }
+
+  footer { margin-block-start: 3rem; color: var(--muted); font-size: 0.85rem; max-width: 60ch; }
+  a { color: #7cb7ff; }
+</style>
+</head>
+<body>
+<header>
+  <h1>San Francisco — Color Palette</h1>
+  <p>Landmarks, bay &amp; nature, and team accents. Each chip shows the largest AA-passing text
+     color (black or white) and its measured WCAG contrast ratio against the fill. Click a hex to copy.</p>
+</header>
+
+<main id="app">
+  <!-- sections injected by script -->
+</main>
+
+<footer>
+  <p><strong>Contrast badges:</strong> <span class="badge pass">AA</span> ≥ 4.5:1 (normal text) ·
+     <span class="badge large">AA Large</span> ≥ 3:1 (large/UI only) ·
+     <span class="badge fail">Low</span> below 3:1.
+     Ratios are for the auto-chosen text color on each fill, computed per
+     <a href="https://www.w3.org/TR/WCAG22/#dfn-contrast-ratio">WCAG 2.2</a>.</p>
+</footer>
+
+<script>
+  const PALETTE = [
+    { group: "Core anchors", colors: [
+      { name: "International Orange", hex: "#D33F00", source: "Golden Gate Bridge (deepened for white-text AA)" },
+      { name: "Karl the Fog",        hex: "#B8BFC6", source: "SF fog" },
+      { name: "Fog Shadow",          hex: "#5C666F", source: "Deep gray — text / contrast" },
+    ]},
+    { group: "Bay & nature", colors: [
+      { name: "Bay Blue",       hex: "#1B6CA8", source: "The water" },
+      { name: "Bay Teal",       hex: "#2E8B8B", source: "Greener bay tones" },
+      { name: "Presidio Green", hex: "#3E6B4F", source: "Cypress / park greenery" },
+      { name: "Golden Hills",   hex: "#C9A24B", source: "Dry summer hills" },
+      { name: "Sunset Coral",   hex: "#E9764F", source: "Fog-lit sunsets" },
+    ]},
+    { group: "Landmarks & culture", colors: [
+      { name: "Cable Car Maroon", hex: "#7A1F2B", source: "Muni cable cars" },
+      { name: "Chinatown Red",    hex: "#C8102E", source: "Lanterns / gates" },
+      { name: "Imperial Gold",    hex: "#E0A526", source: "Chinatown accents" },
+      { name: "Painted Lady Bone",hex: "#E7C8A0", source: "Victorian trim" },
+      { name: "Sourdough Crust",  hex: "#D8B487", source: "A very SF neutral" },
+    ]},
+    { group: "Team accents", colors: [
+      { name: "Giants Orange",   hex: "#FD5A1E", source: "SF Giants" },
+      { name: "Warriors Blue",   hex: "#1D428A", source: "Golden State Warriors" },
+      { name: "Warriors Gold",   hex: "#FFC72C", source: "Golden State Warriors" },
+      { name: "Niner Red",       hex: "#AA0000", source: "SF 49ers" },
+      { name: "Niner Gold",      hex: "#B3995D", source: "SF 49ers" },
+    ]},
+    { group: "Suggested tight palette (6)", colors: [
+      { name: "Primary",   hex: "#D33F00", source: "International Orange" },
+      { name: "Secondary", hex: "#1B6CA8", source: "Bay Blue — cool balance" },
+      { name: "Accent",    hex: "#E0A526", source: "Imperial Gold — warm pop" },
+      { name: "Support",   hex: "#3E6B4F", source: "Presidio Green" },
+      { name: "Light",     hex: "#B8BFC6", source: "Fog — light neutral" },
+      { name: "Dark",      hex: "#2B2F33", source: "Near-black — text" },
+    ]},
+  ];
+
+  // --- WCAG contrast math (the one job CSS can't do) ---
+  const toLin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  function luminance(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    return 0.2126 * toLin(r) + 0.7152 * toLin(g) + 0.0722 * toLin(b);
+  }
+  function contrast(a, b) {
+    const l1 = luminance(a), l2 = luminance(b);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  }
+  // Pick the text color (black/white) with the higher contrast against the fill.
+  function bestText(fill) {
+    const onWhite = contrast(fill, "#FFFFFF");
+    const onBlack = contrast(fill, "#000000");
+    return onWhite >= onBlack
+      ? { color: "#FFFFFF", ratio: onWhite }
+      : { color: "#000000", ratio: onBlack };
+  }
+  function badge(ratio) {
+    if (ratio >= 4.5) return { cls: "pass",  label: "AA" };
+    if (ratio >= 3)   return { cls: "large", label: "AA Large" };
+    return { cls: "fail", label: "Low" };
+  }
+
+  const app = document.getElementById("app");
+  for (const section of PALETTE) {
+    const h2 = document.createElement("h2");
+    h2.textContent = section.group;
+    app.append(h2);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    for (const c of section.colors) {
+      const { color: on, ratio } = bestText(c.hex);
+      const b = badge(ratio);
+
+      const card = document.createElement("article");
+      card.className = "swatch";
+      card.innerHTML = `
+        <div class="chip" style="--fill:${c.hex};--on:${on}">
+          <span class="name">${c.name}</span>
+        </div>
+        <div class="meta">
+          <div class="row">
+            <button class="copy" type="button" data-hex="${c.hex}"
+                    aria-label="Copy hex ${c.hex} for ${c.name}">${c.hex}</button>
+            <span class="badge ${b.cls}" title="Contrast of chip label text on this fill">${b.label}</span>
+          </div>
+          <p class="source">${c.source}</p>
+          <p class="ratio">Label contrast ${ratio.toFixed(2)}:1 (${on === "#FFFFFF" ? "white" : "black"} text)</p>
+        </div>`;
+      grid.append(card);
+    }
+    app.append(grid);
+  }
+
+  // Copy-to-clipboard, keyboard-operable via the real <button>.
+  app.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".copy");
+    if (!btn) return;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.hex);
+      const orig = btn.textContent;
+      btn.textContent = "Copied ✓";
+      btn.dataset.copied = "true";
+      setTimeout(() => { btn.textContent = orig; btn.dataset.copied = "false"; }, 1200);
+    } catch { /* clipboard blocked; no-op */ }
+  });
+</script>
+</body>
+</html>

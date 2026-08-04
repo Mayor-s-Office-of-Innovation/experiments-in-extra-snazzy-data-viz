@@ -1,0 +1,69 @@
+/* The persistent tilted ground plane. Sits between the hue flood (body) and the card content. */
+
+condition-map {
+  position: absolute; inset: 0; z-index: 1;
+  overflow: hidden; pointer-events: none;
+  --map-hue: var(--card-accent);
+}
+
+.map-tilt {
+  position: absolute; inset: -25%;                 /* bleed so tilt/pan never shows an edge */
+  perspective: 1400px;
+  transform: translateY(var(--pan-y, 0%)) rotateX(var(--tilt, 55deg));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.map-camera {
+  position: absolute; inset: 0;
+  transform: rotateZ(var(--rot, 0deg)) scale(var(--zoom, 1)) translate(var(--tx, 0%), var(--ty, 0%));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.map-drift { position: absolute; inset: 0; }
+.map-drift.is-drifting { animation: map-drift 26s ease-in-out infinite alternate; }
+
+@keyframes map-drift {
+  from { transform: translate(-1.2%, -0.8%) rotate(-0.6deg); }
+  to   { transform: translate(1.2%, 0.8%) rotate(0.6deg); }
+}
+
+condition-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* the hexbin card draws its own tilted plane, so the shell map steps aside while it's active */
+condition-map { transition: opacity var(--dur) var(--ease-out); }
+condition-map[data-hidden] { opacity: 0; }
+
+/* neighborhood polygons — faint linework by default */
+.hood {
+  fill: color-mix(in srgb, var(--card-fg) 4%, transparent);
+  stroke: color-mix(in srgb, var(--card-fg) 22%, transparent);
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--dur), stroke var(--dur);
+}
+/* active hood: filled + glowing in the map hue */
+[data-style="filled"] .hood.is-active,
+[data-style="outline"] .hood.is-active {
+  fill: color-mix(in srgb, var(--map-hue) 42%, transparent);
+  stroke: var(--map-hue);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--map-hue) 70%, transparent));
+}
+/* pins mode: dim polygons, the pin carries the meaning */
+[data-style="pins"] .hood { fill: transparent; stroke: color-mix(in srgb, var(--card-fg) 14%, transparent); }
+[data-style="pins"] .hood.is-active { fill: transparent; stroke: color-mix(in srgb, var(--map-hue) 55%, transparent); filter: none; }
+
+.map-pin {
+  fill: var(--map-hue);
+  filter: drop-shadow(0 0 10px var(--map-hue));
+  animation: pin-pulse 1.8s ease-in-out infinite;
+}
+@keyframes pin-pulse { 0%,100% { r: 6; opacity: 1; } 50% { r: 9; opacity: .75; } }
+
+.map-dots circle { opacity: .85; }
+
+@media (prefers-reduced-motion: reduce) {
+  .map-drift.is-drifting { animation: none; }
+  .map-pin { animation: none; }
+  .map-tilt, .map-camera { transition: none !important; }
+}

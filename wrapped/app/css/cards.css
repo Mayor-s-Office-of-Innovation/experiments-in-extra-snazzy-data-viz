@@ -1,0 +1,200 @@
+/* Card content styles. Uses --card-fg/--card-accent (per-hue, AA-paired in tokens.css),
+   so text contrast holds on every flood automatically. */
+
+/* three type roles */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--step-kicker);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--card-accent);
+  margin: 0;
+}
+/* inside the dark glass panel, brighten the accent so even dark accents (maroon) stay legible */
+.panel .kicker { color: color-mix(in srgb, var(--card-accent) 55%, var(--paper)); }
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-xl);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0.2em 0 0;
+  text-wrap: balance;
+  overflow-wrap: anywhere;            /* never let a long word/number spill */
+  min-width: 0;
+}
+
+/* ---- Overture ---- */
+/* NOTE: the card (not .overture) is the size container, so numbers scale to the viewport and
+   stay big/expansive. Prose gets its own readable max-width; numbers can run wider. */
+.overture {
+  grid-template-rows: auto 1fr auto; align-content: center; gap: var(--gap);
+  max-width: min(92vw, 42rem); min-width: 0;
+}
+.overture__head { align-self: end; min-width: 0; }
+.overture .display { max-width: 14ch; }               /* keep the title punchy */
+.stats { display: grid; gap: var(--gap); margin: 0; padding: 0; list-style: none; align-content: center; min-width: 0; }
+.stat { display: grid; gap: 0.15rem; min-width: 0; }
+.stat__num {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(2.5rem, 15cqi, 8rem); line-height: 0.9; letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  max-width: 100%; overflow-wrap: anywhere; min-width: 0;
+}
+.stat__label { font-size: var(--step-l); font-weight: 700; overflow-wrap: anywhere; }
+.stat__sub { font-family: var(--font-mono); font-size: var(--step-kicker); color: var(--card-accent); letter-spacing: 0.08em; }
+.overture__foot { align-self: start; font-size: var(--step-body); max-width: 26ch; opacity: 0.92; margin: 0; }
+
+/* ---- Beat (generic panel card) ---- */
+.beat { place-items: center; }
+.beat[data-align="end"] { align-items: end; }      /* panel low; map marker (e.g. TL pin) shows above */
+.beat[data-align="start"] { align-items: start; }
+.beat .panel { display: grid; gap: 0.6rem; }
+.beat .display { font-size: var(--step-l); }
+.beat__stat { display: grid; gap: 0.1rem; margin: 0.4rem 0 0; min-width: 0; }
+.beat__stat .stat__num { font-size: clamp(2rem, 26cqi, 4.5rem); }   /* cqi = panel width */
+.beat__body { margin: 0.4rem 0 0; font-size: var(--step-body); opacity: 0.92; overflow-wrap: anywhere; }
+
+/* ---- Divergence beat ---- */
+.divergence { display: grid; gap: 0.7rem; }
+.divergence__row { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 0.6rem; margin: 0; }
+.divergence__pct { font-size: clamp(2rem, 22cqi, 3.75rem); line-height: 1; }
+.divergence__row--crowd .divergence__pct { color: var(--sf-golden-hills); }   /* complaints */
+.divergence__row--camera .divergence__pct { color: color-mix(in srgb, var(--sf-bay-blue) 45%, white); } /* sweep — lightened for dark-panel contrast */
+.divergence__row .stat__label { font-size: var(--step-body); font-weight: 600; align-self: center; }
+.divergence__link {
+  justify-self: start; margin-top: 0.3rem;
+  font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.06em;
+  color: var(--paper); text-decoration: underline; text-underline-offset: 3px;
+}
+.divergence__link:hover { color: var(--card-accent); }
+
+/* ---- Hexbin hero ("Where it looked") ---- */
+/* The engine (SVG faux-3D or deck.gl WebGL) mounts into .hexbin-stage, a full-card layer behind
+   the panel. data-no-advance (set in JS) keeps taps/drags on the viz from skipping the card. */
+.hexbin-stage { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.hexbin-svg   { width: 100%; height: 100%; display: block; overflow: visible; pointer-events: none; }
+.hexbin-webgl { width: 100%; height: 100%; display: block; pointer-events: auto; }   /* drag to orbit */
+.hexbin-plane.is-drifting { animation: map-drift 26s ease-in-out infinite alternate; transform-origin: 50% 60%; }
+.hexbin-cap { stroke: rgba(0,0,0,.25); stroke-width: 0.6; }
+/* neighborhood/city outlines behind the columns for geographic legibility */
+.hexbin-hood {
+  fill: color-mix(in srgb, var(--card-fg) 3%, transparent);
+  stroke: color-mix(in srgb, var(--card-fg) 24%, transparent);
+  stroke-width: 1; vector-effect: non-scaling-stroke;
+}
+
+/* panel docked at the bottom; the prose scrolls if it ever exceeds the cap so it can never
+   spill over the nav. "Hide text" collapses the prose to just the control bar for bare-viz study. */
+.hexbin-card .panel {
+  position: relative; z-index: 1;
+  align-self: end; justify-self: center;
+  inline-size: min(42ch, 100%); max-height: 80%;
+  display: grid; grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;                       /* prose scrolls within the cap — never spills onto nav */
+}
+.hexbin-prose { display: grid; gap: 0.5rem; overflow-y: auto; min-height: 0; align-content: start; }
+.hexbin-card[data-panel="min"] .hexbin-prose { display: none; }
+.hexbin-card[data-panel="min"] .panel {
+  background: none; border: none; box-shadow: none; backdrop-filter: none;
+  inline-size: auto; max-height: none;
+}
+.hexbin-caption {
+  margin: 0.7rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker);
+  letter-spacing: 0.03em; line-height: 1.4; opacity: 0.8; overflow-wrap: anywhere;
+}
+.hexbin-fallback { margin: 0.6rem 0 0; color: var(--paper); font-size: var(--step-body); opacity: 0.9; }
+
+/* stat chip (e.g., The Sweep's "7 in 10 blocks Excellent") */
+.hexbin-chip { display: flex; align-items: baseline; gap: 0.45rem; margin: 0.15rem 0 0.1rem; min-width: 0; }
+.hexbin-chip strong {
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 9cqi, 2.6rem);
+  line-height: 1; letter-spacing: -0.02em; color: color-mix(in srgb, var(--card-accent) 55%, var(--paper));
+}
+.hexbin-chip span { font-size: var(--step-body); font-weight: 600; overflow-wrap: anywhere; }
+
+/* fog vignette — closes the frame in around a map marker (e.g. the sergeant's pulsing light).
+   Sits over the shell map, below the panel; pointer-events none so tap-to-advance still works. */
+.beat[data-fog]::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 72% 58% at 50% 42%, transparent 30%, rgba(5, 7, 9, 0.66) 100%);
+}
+.beat[data-fog] .panel { position: relative; z-index: 1; }
+
+/* ---- What it saw (flat-rubric bars) ---- */
+.algorithm-card .panel { max-height: 100%; overflow-y: auto; }   /* never spill onto the nav */
+.rubric { display: grid; gap: 0.4rem; margin: 0.6rem 0 0; }
+.rubric__row { display: grid; grid-template-columns: 8.5em 1fr auto; align-items: center; gap: 0.5rem; min-width: 0; }
+.rubric__label { font-size: var(--step-kicker); overflow-wrap: anywhere; opacity: 0.92; }
+.rubric__track { height: 12px; border-radius: 999px; background: color-mix(in srgb, var(--paper) 12%, transparent); overflow: hidden; }
+.rubric__fill { display: block; height: 100%; border-radius: 999px; background: color-mix(in srgb, var(--paper) 55%, transparent); }
+.rubric__fill[data-hot] { background: var(--sf-sunset-coral); }   /* Graffiti — the loud cosmetic one */
+.rubric__num { font-family: var(--font-mono); font-size: var(--step-kicker); font-variant-numeric: tabular-nums; opacity: 0.9; }
+.rubric__formula { margin: 0.7rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker); line-height: 1.45; opacity: 0.82; overflow-wrap: anywhere; }
+.rubric__fold { margin: 0.55rem 0 0; font-size: var(--step-body); line-height: 1.4; }
+.rubric__fold strong { color: color-mix(in srgb, var(--card-accent) 60%, var(--paper)); }
+
+/* ---- Equity read (Bayview ↔ Mission ↔ income) ---- */
+.equity-card .panel { align-self: end; justify-self: center; inline-size: min(44ch, 100%); max-height: 100%; overflow-y: auto; }
+.equity-metric { margin: 0.45rem 0 0; }
+.equity-take { margin-top: 0.55rem; }
+.equity-legend { display: flex; gap: 1rem; margin: 0.2rem 0 0.4rem; font-family: var(--font-mono); font-size: var(--step-kicker); }
+.equity-key { display: inline-flex; align-items: center; gap: 0.4rem; }
+.equity-key::before { content: ''; width: 12px; height: 12px; border-radius: 3px; }
+.equity-key--b::before { background: var(--sf-bay-teal); }
+.equity-key--m::before { background: var(--sf-golden-hills); }
+.equity-metric { margin: 0.55rem 0 0; }
+.equity-metric__label { margin: 0 0 0.25rem; font-size: var(--step-kicker); opacity: 0.9; }
+.equity-bars { display: grid; gap: 0.3rem; }
+.equity-bar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.5rem; }
+.equity-bar__fill { height: 13px; border-radius: 999px; min-width: 3px; }
+.equity-bar__val { font-family: var(--font-mono); font-size: var(--step-kicker); font-variant-numeric: tabular-nums; opacity: 0.92; }
+.equity-take { margin-top: 0.7rem; }
+
+/* ---- Four kinds of block (typology synthesis) ---- */
+.typo-card .panel { align-self: end; justify-self: center; inline-size: min(46ch, 100%); max-height: 100%; overflow-y: auto; display: grid; gap: 0.45rem; }
+.typo-row { display: grid; grid-template-columns: auto 1fr; gap: 0.55rem; align-items: start; }
+.typo-swatch { width: 12px; height: 12px; border-radius: 3px; margin-top: 0.35rem; }
+.typo-row--agree .typo-swatch { background: var(--sf-bay-teal); }
+.typo-row--diverge .typo-swatch { background: var(--sf-sunset-coral); }
+.typo-body { min-width: 0; }
+.typo-head { margin: 0; font-size: var(--step-body); }
+.typo-head strong { color: color-mix(in srgb, var(--card-accent) 55%, var(--paper)); }
+.typo-hood { opacity: 0.85; }
+.typo-sub { margin: 0.1rem 0 0.35rem; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.02em; opacity: 0.9; }
+.typo-sub .typo-311 { color: var(--sf-golden-hills); }
+.typo-sub .typo-ai { color: color-mix(in srgb, var(--sf-bay-blue) 45%, white); }
+.typo-stats { margin: 0.05rem 0 0; display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-family: var(--font-mono); font-size: var(--step-kicker); }
+/* source colors: 311 = gold (public), AI severe = blue (the model) — the comparison the card is about */
+.typo-src strong { font-family: var(--font-display); font-size: 1.25em; letter-spacing: -0.01em; }
+.typo-311 strong { color: var(--sf-golden-hills); }
+.typo-ai strong { color: color-mix(in srgb, var(--sf-bay-blue) 45%, white); }
+.typo-src span { opacity: 0.82; }
+.typo-note { margin: 0.02rem 0 0; font-size: var(--step-kicker); opacity: 0.7; overflow-wrap: anywhere; }
+.typo-take { margin-top: 0.5rem; }
+
+/* ---- Caveats (quiet honesty card) ---- */
+.caveats { align-content: center; gap: var(--gap); max-width: min(92vw, 46rem); min-width: 0; }
+.caveats .display { font-size: var(--step-l); max-width: 20ch; }
+.caveats__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.caveats__item { font-size: var(--step-body); line-height: 1.45; max-width: 54ch; overflow-wrap: anywhere; opacity: 0.94; }
+.caveats__item strong { color: var(--card-accent); }
+
+/* ---- Complaints choropleth legend ---- */
+.choro-legend { display: flex; align-items: center; gap: 0.5rem; margin: 0.7rem 0 0; }
+.choro-legend__bar {
+  flex: 1; height: 10px; border-radius: 999px; min-width: 80px;
+  background: linear-gradient(90deg, #f2e6c4, #e6c179, #d29a3b, #b0741d, #7c4d12);
+}
+.choro-legend__label { font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.06em; opacity: 0.85; }
+
+/* ---- Share ---- */
+.share { grid-template-rows: auto 1fr auto; justify-items: center; align-content: center; gap: var(--gap); }
+.share__frame {
+  max-height: 62cqh; aspect-ratio: 1080 / 1350;
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+.share__canvas { display: block; height: 100%; width: auto; max-width: 100%; }
+.share__dl { color: var(--sf-on-light); background: var(--card-fg); border: none; text-decoration: none; }
+.share__dl:hover { background: color-mix(in srgb, var(--card-fg) 85%, black); }

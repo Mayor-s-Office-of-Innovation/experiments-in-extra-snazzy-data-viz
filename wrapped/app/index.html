@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three ways to see a street — SF street conditions</title>
+  <meta name="description" content="Staff photos, an AI score, and public 311 reports over the same San Francisco streets and window — three sources that don’t always agree.">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="modulepreload" href="js/main.js">
+</head>
+<body>
+  <a class="skip-link" href="#stage">Skip to story</a>
+
+  <!-- Progress: a real list of steps, aria-current marks the active one -->
+  <nav class="progress" aria-label="Story progress">
+    <ol id="progress" class="progress__track"></ol>
+  </nav>
+
+  <!-- The story stage. Cards mount here; one is [active] at a time. -->
+  <main id="stage" class="stage" tabindex="-1" aria-roledescription="story">
+    <div id="cards" class="cards"></div>
+  </main>
+
+  <!-- Live region announces card changes for screen readers -->
+  <p id="announcer" class="visually-hidden" aria-live="polite"></p>
+
+  <!-- Controls -->
+  <div class="controls" role="group" aria-label="Story controls">
+    <button id="prev" class="btn" type="button" aria-label="Previous card">‹</button>
+    <button id="autoplay" class="btn" type="button" aria-pressed="false"
+            aria-label="Play automatically">▶ Auto</button>
+    <button id="next" class="btn" type="button" aria-label="Next card">›</button>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

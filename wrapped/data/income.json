@@ -1,0 +1,201 @@
+{
+"source": "US Census ACS 2022 5-year (B19013 median household income \u00b7 B01003 population) by tract \u2192 SF Analysis Neighborhoods, population-weighted mean of tract medians; tracts assigned by centroid point-in-polygon.",
+"acs_year": 2022,
+"neighborhoods": {
+"North Beach": {
+"median_income": 122709,
+"population": 9832,
+"n_tracts": 4
+},
+"Russian Hill": {
+"median_income": 152762,
+"population": 15384,
+"n_tracts": 6
+},
+"Financial District": {
+"median_income": 192282,
+"population": 23089,
+"n_tracts": 10
+},
+"Chinatown": {
+"median_income": 33509,
+"population": 13693,
+"n_tracts": 6
+},
+"Nob Hill": {
+"median_income": 108991,
+"population": 24762,
+"n_tracts": 9
+},
+"Tenderloin": {
+"median_income": 44882,
+"population": 32056,
+"n_tracts": 12
+},
+"Marina": {
+"median_income": 216447,
+"population": 23910,
+"n_tracts": 9
+},
+"Pacific Heights": {
+"median_income": 192222,
+"population": 22996,
+"n_tracts": 9
+},
+"Presidio Heights": {
+"median_income": 176753,
+"population": 10470,
+"n_tracts": 3
+},
+"Western Addition": {
+"median_income": 123376,
+"population": 19593,
+"n_tracts": 6
+},
+"Japantown": {
+"median_income": 92829,
+"population": 3708,
+"n_tracts": 1
+},
+"Lone Mountain/USF": {
+"median_income": 160946,
+"population": 16504,
+"n_tracts": 4
+},
+"Hayes Valley": {
+"median_income": 169808,
+"population": 19039,
+"n_tracts": 5
+},
+"Haight Ashbury": {
+"median_income": 197375,
+"population": 18473,
+"n_tracts": 5
+},
+"Castro/Upper Market": {
+"median_income": 191658,
+"population": 22623,
+"n_tracts": 7
+},
+"South of Market": {
+"median_income": 98368,
+"population": 24521,
+"n_tracts": 7
+},
+"Mission": {
+"median_income": 146561,
+"population": 55999,
+"n_tracts": 17
+},
+"Treasure Island": {
+"median_income": 96000,
+"population": 3136,
+"n_tracts": 1
+},
+"Twin Peaks": {
+"median_income": 162924,
+"population": 7956,
+"n_tracts": 2
+},
+"Noe Valley": {
+"median_income": 208257,
+"population": 23079,
+"n_tracts": 6
+},
+"Glen Park": {
+"median_income": 184359,
+"population": 8723,
+"n_tracts": 2
+},
+"Potrero Hill": {
+"median_income": 212312,
+"population": 15037,
+"n_tracts": 5
+},
+"Bayview Hunters Point": {
+"median_income": 87701,
+"population": 40180,
+"n_tracts": 10
+},
+"Bernal Heights": {
+"median_income": 157860,
+"population": 24767,
+"n_tracts": 6
+},
+"Outer Mission": {
+"median_income": 135716,
+"population": 22636,
+"n_tracts": 5
+},
+"Excelsior": {
+"median_income": 108468,
+"population": 38846,
+"n_tracts": 8
+},
+"Portola": {
+"median_income": 114905,
+"population": 15741,
+"n_tracts": 4
+},
+"Visitacion Valley": {
+"median_income": 89349,
+"population": 18046,
+"n_tracts": 5
+},
+"Inner Sunset": {
+"median_income": 168726,
+"population": 27729,
+"n_tracts": 6
+},
+"West of Twin Peaks": {
+"median_income": 184549,
+"population": 37480,
+"n_tracts": 7
+},
+"Oceanview/Merced/Ingleside": {
+"median_income": 117460,
+"population": 24627,
+"n_tracts": 6
+},
+"Sunset/Parkside": {
+"median_income": 139401,
+"population": 78826,
+"n_tracts": 16
+},
+"Lakeshore": {
+"median_income": 67643,
+"population": 12529,
+"n_tracts": 4
+},
+"Inner Richmond": {
+"median_income": 164756,
+"population": 20992,
+"n_tracts": 5
+},
+"Outer Richmond": {
+"median_income": 132202,
+"population": 44573,
+"n_tracts": 11
+},
+"Seacliff": {
+"median_income": 250001,
+"population": 2348,
+"n_tracts": 1
+},
+"Presidio": {
+"median_income": 236445,
+"population": 3952,
+"n_tracts": 1
+},
+"Mission Bay": {
+"median_income": 217784,
+"population": 16080,
+"n_tracts": 3
+},
+"McLaren Park": {
+"median_income": 12169,
+"population": 129,
+"n_tracts": 1
+}
+}
+}

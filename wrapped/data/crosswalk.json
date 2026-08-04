@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "reviewed": true,
+  "reviewed_note": "Approved 2026-07-23 as-is, including the judgment calls (scooters/merchandise -> Access Obstruction; city_garbage_can_overflowing and transit_shelter/spills/hazwaste -> Waste & Small Debris).",
+  "note": "SC category -> SF311 (service_name, service_details). Comparisons valid only through this table, only on Camera-covered blocks, never for Active Drug Use.",
+  "excluded_categories": {
+    "Active Drug Use": "AI vision model cannot reliably detect hidden/fold drug use (confirmed by the tool creator). Never comparable."
+  },
+  "crosswalk": {
+    "RV or other inhabited vehicle": {
+      "matchers": [],
+      "unmapped_reason": "311 has no \"inhabited vehicle\" concept; Abandoned Vehicle lives under Parking Enforcement (out of scope) and is not the same as a lived-in RV."
+    },
+    "Waste & Small Debris": {
+      "matchers": [
+        {
+          "service_name": "Street and Sidewalk Cleaning",
+          "labels": [
+            "other_loose_garbage_debris_yard_waste",
+            "other_bagged_boxed_contained_garbage",
+            "glass",
+            "city_garbage_can_overflowing",
+            "oil_paint_other_liquid_spill_wet",
+            "other_contained_hazardous_waste",
+            "auto_accident_debris",
+            "event_parade_mess",
+            "transit_shelter_platform"
+          ]
+        }
+      ],
+      "review_note": "Litter Receptacle Maintenance deliberately excluded \u2014 can upkeep (add/remove/repair/toters), not observed debris. The real overflow signal is Street & Sidewalk Cleaning/city_garbage_can_overflowing, included above."
+    },
+    "Furniture & Large Debris": {
+      "matchers": [
+        {
+          "service_name": "Street and Sidewalk Cleaning",
+          "labels": [
+            "furniture",
+            "mattress",
+            "electronics",
+            "refrigerator_appliance",
+            "shopping_cart",
+            "tires_less_than_10"
+          ]
+        }
+      ]
+    },
+    "Human and Animal Waste": {
+      "matchers": [
+        {
+          "service_name": "Street and Sidewalk Cleaning",
+          "labels": [
+            "human_waste_or_urine"
+          ]
+        }
+      ]
+    },
+    "Sharps": {
+      "matchers": [
+        {
+          "service_name": "Street and Sidewalk Cleaning",
+          "labels": [
+            "needles_less_than_20",
+            "needles_20_or_more"
+          ]
+        }
+      ]
+    },
+    "Unsheltered Presence": {
+      "matchers": [
+        {
+          "service_name": "Encampment"
+        }
+      ]
+    },
+    "Fire & Safety Hazards": {
+      "matchers": [],
+      "unmapped_reason": "No 311 service captures a photo-visible fire/safety hazard as such."
+    },
+    "Access Obstruction": {
+      "matchers": [
+        {
+          "service_name": "Blocked Street and Sidewalk"
+        }
+      ],
+      "review_note": "Blocked Street & Sidewalk is scooter/merchandise/construction-heavy; confirm the AI flags those as obstruction. Sidewalk & Curb (pavement defects) deliberately NOT included \u2014 surface damage, not obstruction."
+    },
+    "Active Drug Use": {
+      "matchers": [],
+      "excluded": true,
+      "unmapped_reason": "AI vision model cannot reliably detect hidden/fold drug use (confirmed by the tool creator). Never comparable."
+    },
+    "Public Health Need": {
+      "matchers": [],
+      "unmapped_reason": "Broad SC acuity signal with no discrete 311 equivalent."
+    },
+    "Animals": {
+      "matchers": [],
+      "unmapped_reason": "Animal issues route to Animal Care & Control (separate dataset), not this 311 feed."
+    },
+    "Graffiti": {
+      "matchers": [
+        {
+          "service_name": "Graffiti Public"
+        },
+        {
+          "service_name": "Graffiti Private"
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "total_311_comparable_events": 167819,
+    "mapped_311_events": 158711,
+    "mapped_share": 0.946,
+    "unmapped_labels": {
+      "Sidewalk and Curb/pavement_defect": 1458,
+      "Litter Receptacle Maintenance/other_including_abandoned_toter": 1282,
+      "Litter Receptacle Maintenance/toters_left_out_24x7": 930,
+      "Sidewalk and Curb/collapsed_sidewalk": 748,
+      "Sidewalk and Curb/lifted_sidewalk_tree_roots": 494,
+      "Sidewalk and Curb/lifted_sidewalk_other": 480,
+      "Illegal Postings/affixed_improperly": 464,
+      "Sidewalk and Curb/curb_or_curb_ramp_defect": 463,
+      "Sidewalk and Curb/other": 437,
+      "Litter Receptacle Maintenance/door_lock_issue": 334,
+      "Sidewalk and Curb/missing_side_sewer_vent_cover": 251,
+      "Litter Receptacle Maintenance/transit_shelter_platform": 235,
+      "Litter Receptacle Maintenance/add_garbage_can": 220,
+      "Litter Receptacle Maintenance/liner_issue_damaged_missing": 195,
+      "Litter Receptacle Maintenance/other_garbage_can_repair": 187,
+      "Illegal Postings/multiple_postings": 175,
+      "Sidewalk and Curb/damaged_side_sewer_vent_cover": 173,
+      "Litter Receptacle Maintenance/remove_garbage_can": 110,
+      "Litter Receptacle Maintenance/tipped_over": 105,
+      "Sidewalk and Curb/manhole_cover_off": 68,
+      "Illegal Postings/no_posting_date": 61,
+      "Sidewalk and Curb/utility_excavation": 55,
+      "Sidewalk and Curb/public_stairway_defect": 45,
+      "Illegal Postings/posted_on_traffic_light": 32,
+      "Sidewalk and Curb/construction_plate_shifted": 28,
+      "Illegal Postings/posting_too_large_in_size": 18,
+      "Litter Receptacle Maintenance/debris_box_maintenance_overflowing": 18,
+      "Illegal Postings/posted_on_directional_sign": 15,
+      "Illegal Postings/posted_over_70_days": 15,
+      "Illegal Postings/posted_on_historic_street_light": 7,
+      "Illegal Postings/posting_too_high_on_pole": 5
+    }
+  }
+}
