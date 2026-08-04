@@ -1,6 +1,6 @@
-# Streets Wrapped
+# Streets 
 
-A "Spotify Wrapped"–style, motion-heavy story site that compares **streetconditions.org**
+A snazzy, motion-heavy story site that compares **streetconditions.org**
 (city-staff field photos, AI-scored) with **SF 311** (public reports) over the same San
 Francisco streets and window (2026-01-30 → 2026-06-08), neighborhood by neighborhood.
 
