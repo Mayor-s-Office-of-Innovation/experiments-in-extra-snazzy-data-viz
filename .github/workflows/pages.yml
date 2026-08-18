@@ -1,0 +1,70 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wrapped/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+# Least-privilege token: read the repo, write Pages, mint the OIDC token deploy-pages needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deploy at a time; don't cancel an in-flight one mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site
+        run: |
+          set -euo pipefail
+          # Publish the wrapped/ dir as the site root, minus the 15MB raw CSV
+          # (a build input the browser never loads).
+          rsync -a --delete \
+            --exclude 'data/raw/' \
+            wrapped/ _site/
+
+          # Disable Jekyll so nothing (e.g. files starting with _) gets filtered.
+          touch _site/.nojekyll
+
+          # The app lives at /app/; redirect the bare site URL there.
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=./app/">
+            <link rel="canonical" href="./app/">
+            <title>Redirecting…</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="./app/">the app</a>…</p>
+          </body>
+          </html>
+          HTML
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
