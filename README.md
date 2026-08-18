@@ -4,6 +4,8 @@ A snazzy, motion-heavy story site that compares **streetconditions.org**
 (city-staff field photos, AI-scored) with **SF 311** (public reports) over the same San
 Francisco streets and window (2026-01-30 → 2026-06-08), neighborhood by neighborhood.
 
+<img width="1130" height="806" alt="Screenshot 2026-08-04 at 4 47 30 PM" src="https://github.com/user-attachments/assets/8083cbe2-841f-42a4-a3d3-9f5d3a630b72" />
+
 The app is a zero-dependency static site (vanilla web components + native WAAPI motion). All
 data is pre-baked and committed under `wrapped/data/`, so **running it locally needs nothing
 but a static file server** — no build step, no npm install, no API keys.
