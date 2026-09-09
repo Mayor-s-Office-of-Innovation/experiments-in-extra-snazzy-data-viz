@@ -1,0 +1,110 @@
+// Insight 1 — Bayview vs Mission bar-pair. Four labeled rows (observations, % with an issue,
+// severe observations, 311 cases), each row two proportional bars (Bayview vs Mission).
+// The visual asymmetry IS the argument: three near-identical rows, one catastrophically lopsided.
+// Numbers come from the bake via data.hood() — never hardcoded.
+import { CardBase } from './base-card.js';
+import * as data from '../data.js';
+import * as motion from '../motion.js';
+
+const HOOD_A = 'Bayview Hunters Point';
+const HOOD_B = 'Mission';
+const HOOD_A_SHORT = 'Bayview';
+const HOOD_B_SHORT = 'Mission';
+
+class BarPairCard extends CardBase {
+  render() {
+    const s = this.spec;
+    this.classList.add('beat', 'barpair');
+    if (s.align) this.dataset.align = s.align;
+
+    const a = data.hood(HOOD_A)?.camera_algorithm || {};
+    const b = data.hood(HOOD_B)?.camera_algorithm || {};
+    const a311 = data.hood(HOOD_A)?.crowd?.total || 0;
+    const b311 = data.hood(HOOD_B)?.crowd?.total || 0;
+
+    const rows = [
+      { label: 'photos taken by staff',       a: a.obs,             b: b.obs },
+      { label: 'found an issue',              a: pct(a),            b: pct(b), fmt: (v) => `${v}%` },
+      { label: 'severe observations',         a: a.obs_with_severe, b: b.obs_with_severe },
+      { label: '311 complaints',              a: a311,              b: b311, ratio: true },
+    ];
+
+    const panel = this.h('div', { class: 'panel barpair__panel' });
+    panel.append(this.h('p', { class: 'kicker', text: s.kicker || '' }));
+    panel.append(this.h('h2', { class: 'display', text: s.title || '' }));
+
+    // legend chips once, above the rows
+    const legend = this.h('div', { class: 'barpair__legend' },
+      this.h('span', { class: 'barpair__chip barpair__chip--a', text: HOOD_A }),
+      this.h('span', { class: 'barpair__chip barpair__chip--b', text: HOOD_B }));
+    panel.append(legend);
+
+    this._rows = [];
+    this._nums = [];
+    const max = {
+      ab: Math.max(a.obs, b.obs),
+      issue: 100,
+      sev: Math.max(a.obs_with_severe || 0, b.obs_with_severe || 0),
+      c311: Math.max(a311, b311),
+    };
+    for (const [ri, r] of rows.entries()) {
+      // the 311 row is the argument — mark it so CSS can grow it and dim the three "same" rows
+      const hero = r.ratio ? ' barpair__row--hero' : ' barpair__row--same';
+      const m = r.ratio ? max.c311 : (r.label === 'found an issue' ? max.issue : (r.label === 'severe observations' ? max.sev : max.ab));
+      const row = this.h('div', { class: `barpair__row${hero}` });
+      row.append(this.h('p', { class: 'barpair__label', text: r.label }));
+      const bars = this.h('div', { class: 'barpair__bars' });
+      for (const [i, v] of [r.a, r.b].entries()) {
+        const track = this.h('div', { class: `barpair__track barpair__track--${i ? 'b' : 'a'}` });
+        const fill = this.h('div', { class: 'barpair__fill' });
+        fill.dataset.w = String(Math.max(2, 100 * (v || 0) / m));   // min 2% so tiny bars stay visible
+        const num = this.h('span', { class: 'barpair__num' });
+        num.dataset.to = String(v || 0);
+        num.textContent = '0';
+        this._nums.push({ num, fmt: r.fmt });
+        // hood tag on every bar — never make the viewer deduce which color is which district
+        const tag = this.h('span', { class: `barpair__tag barpair__tag--${i ? 'b' : 'a'}`, text: i ? HOOD_B_SHORT : HOOD_A_SHORT });
+        track.append(fill, num, tag);
+        bars.append(track);
+      }
+      row.append(bars);
+      panel.append(row);
+      this._rows.push(row);
+    }
+
+    if (s.body) panel.append(this.h('p', { class: 'beat__body', text: s.body }));
+    this._panel = panel;
+    this.append(panel);
+  }
+
+  onEnter() {
+    motion.play('fade-up', this._panel);
+    // the two map highlights take the SAME colors as the two bar series below
+    const map = document.querySelector('condition-map');
+    if (map) {
+      const accent = getComputedStyle(this).getPropertyValue('--card-accent').trim() || '#e0a526';
+      const fg = getComputedStyle(this).getPropertyValue('--card-fg').trim() || '#f2f4f3';
+      map.setHoodColors({ [HOOD_A]: accent, [HOOD_B]: `color-mix(in srgb, ${fg} 72%, transparent)` });
+    }
+    // bars grow staggered, then the numbers count up
+    this._rows.forEach((row, i) => {
+      const fills = row.querySelectorAll('.barpair__fill');
+      fills.forEach((f, j) => {
+        f.animate([{ width: '0%' }, { width: f.dataset.w + '%' }],
+          { duration: 700, delay: 150 + i * 180 + j * 90, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
+      });
+    });
+    this._nums.forEach(({ num, fmt }, i) => motion.play('count-up', num, {
+      to: Number(num.dataset.to), format: fmt ? () => fmt(Number(num.dataset.to)) : undefined,
+    }));
+  }
+
+  onExit() {
+    document.querySelector('condition-map')?.clearHoodColors();
+    return motion.play('fade-out', this);
+  }
+}
+
+const pct = (cam) => (cam?.obs ? Math.round(100 * (cam.obs_with_signal || 0) / cam.obs) : 0);
+
+customElements.define('card-barpair', BarPairCard);

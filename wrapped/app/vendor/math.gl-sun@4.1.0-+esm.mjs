@@ -1,0 +1,8 @@
+/**
+ * Bundled by jsDelivr using Rollup v4.62.2 and esbuild v0.28.1.
+ * Original file: /npm/@math.gl/sun@4.1.0/dist/index.js
+ *
+ * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
+ */
+const i=Math.PI/180,r=1e3*60*60*24,l=2440588,d=2451545,e=i*23.4397,g=357.5291,f=.98560028,A=280.147,D=360.9856235;function u(t,n,o){const c=i*-o,s=i*n,a=E(t),h=_(a),M=y(a,c)-h.rightAscension;return{azimuth:I(M,s,h.declination),altitude:p(M,s,h.declination)}}function S(t,n,o){const{azimuth:c,altitude:s}=u(t,n,o);return[Math.sin(c)*Math.cos(s),Math.cos(c)*Math.cos(s),-Math.sin(s)]}function T(t){return(typeof t=="number"?t:t.getTime())/r-.5+l}function E(t){return T(t)-d}function m(t,n){const o=t;return Math.atan2(Math.sin(o)*Math.cos(e)-Math.tan(n)*Math.sin(e),Math.cos(o))}function H(t,n){const o=t;return Math.asin(Math.sin(n)*Math.cos(e)+Math.cos(n)*Math.sin(e)*Math.sin(o))}function I(t,n,o){const c=t,s=n,a=o;return Math.atan2(Math.sin(c),Math.cos(c)*Math.sin(s)-Math.tan(a)*Math.cos(s))}function p(t,n,o){const c=t,s=n,a=o;return Math.asin(Math.sin(s)*Math.sin(a)+Math.cos(s)*Math.cos(a)*Math.cos(c))}function y(t,n){return i*(A+D*t)-n}function P(t){return i*(g+f*t)}function R(t){const n=t,o=i*(1.9148*Math.sin(n)+.02*Math.sin(2*n)+3e-4*Math.sin(3*n)),c=i*102.9372;return n+o+c+Math.PI}function _(t){const n=P(t),o=R(n);return{declination:H(o,0),rightAscension:m(o,0)}}export{S as getSunDirection,u as getSunPosition};
+//# sourceMappingURL=/sm/8e512e8b15d36c37e985080c1b91303f0c32b31dec9b6faae3f43ecd06e84e45.map

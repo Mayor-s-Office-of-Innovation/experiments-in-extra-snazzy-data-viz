@@ -45,15 +45,152 @@
 .stat__sub { font-family: var(--font-mono); font-size: var(--step-kicker); color: var(--card-accent); letter-spacing: 0.08em; }
 .overture__foot { align-self: start; font-size: var(--step-body); max-width: 26ch; opacity: 0.92; margin: 0; }
 
+/* v2 overture — the three research questions */
+.overture__questions {
+  display: grid; gap: 0.55rem; margin: 0; padding: 0; list-style: none;
+  counter-reset: q; max-width: 34rem; min-width: 0;
+}
+.overture__questions li {
+  counter-increment: q; display: grid; grid-template-columns: auto 1fr; gap: 0.7rem;
+  font-size: var(--step-body); opacity: 0.95; overflow-wrap: anywhere;
+}
+.overture__questions li::before {
+  content: counter(q); font-family: var(--font-mono); font-size: var(--step-kicker);
+  color: var(--card-accent); letter-spacing: 0.08em; padding-top: 0.2em;
+}
+
+/* v2 overture — questions-first compact variant (fits ~700px-tall laptop screens):
+   slightly smaller display, questions are the PRIMARY content (largest after the title),
+   numbers shrink to a strip */
+.overture--compact .display { font-size: clamp(1.9rem, 8cqi, 3.2rem); }
+.overture--compact { gap: 0.65rem; align-content: center; place-content: safe center; }   /* tight gap + never overflow the top */
+.overture--compact .overture__questions { gap: 0.55rem; max-width: 30rem; }
+.overture--compact .overture__questions li {
+  font-size: clamp(1.05rem, 4.2cqi, 1.45rem); font-weight: 600; line-height: 1.28;
+  align-items: baseline;   /* number sits on the same baseline as the first text line */
+}
+.overture--compact .overture__questions li::before {
+  font-size: 1.5em; line-height: 1;   /* no extra leading → baseline aligns with the text */
+}
+.overture--compact .stats {
+  grid-template-columns: 1fr 1fr; gap: 0 2rem; align-content: end;
+}
+.overture--compact .stat__num {
+  font-size: clamp(1.2rem, 4.5cqi, 1.8rem); line-height: 1;
+}
+.overture--compact .stat__label { font-size: var(--step-body); }
+.overture--compact .overture__foot { font-size: var(--step-kicker); max-width: 44rem; opacity: 0.8; line-height: 1.4; }
+.overture--compact .stats .stat { gap: 0.1rem; }
+
 /* ---- Beat (generic panel card) ---- */
 .beat { place-items: center; }
 .beat[data-align="end"] { align-items: end; }      /* panel low; map marker (e.g. TL pin) shows above */
 .beat[data-align="start"] { align-items: start; }
 .beat .panel { display: grid; gap: 0.6rem; }
+/* v2: bullet-list beat panels run wider — fewer wrapped lines, panels stay short on laptops */
+.beat:has(.beat__items) .panel { inline-size: min(56ch, 100%); max-height: 100%; overflow-y: auto; align-content: start; }
 .beat .display { font-size: var(--step-l); }
 .beat__stat { display: grid; gap: 0.1rem; margin: 0.4rem 0 0; min-width: 0; }
 .beat__stat .stat__num { font-size: clamp(2rem, 26cqi, 4.5rem); }   /* cqi = panel width */
 .beat__body { margin: 0.4rem 0 0; font-size: var(--step-body); opacity: 0.92; overflow-wrap: anywhere; }
+
+/* v2 bullet lists inside beat panels — mono counter, bold lead-in, staggered fly-in.
+   Wider than the default 38ch panel: bullets wrap less, panels stay short on laptop screens. */
+.beat__items { display: grid; gap: 0.55rem; margin: 0.5rem 0 0; padding: 0; list-style: none; counter-reset: b; min-width: 0; }
+.beat__items li {
+  counter-increment: b; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.65rem;
+  align-items: baseline;   /* counter sits on the first text line's baseline */
+  font-size: var(--step-body); line-height: 1.4; opacity: 0.95; overflow-wrap: anywhere;
+}
+.beat__items li::before {
+  content: counter(b, decimal-leading-zero); font-family: var(--font-mono);
+  font-size: var(--step-kicker); color: var(--card-accent); letter-spacing: 0.08em;
+}
+.beat__items strong { font-weight: 700; margin-right: 0.35em; }
+
+/* ---- v2 bar-pair (Insight 1: Bayview vs Mission) ---- */
+.barpair__panel { display: grid; gap: 0.55rem; padding-block: clamp(1rem, 2.5vw, 1.5rem); overflow-y: auto; inline-size: min(52ch, 100%); align-self: end; }
+.barpair__panel .display { font-size: clamp(1.4rem, 5.5cqi, 2.4rem); }
+.barpair__panel .beat__body { margin-top: 0.2rem; font-size: var(--step-kicker); }
+.barpair__legend { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.barpair__chip {
+  font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.08em;
+  padding: 0.2em 0.7em; border-radius: 999px;
+}
+.barpair__chip--a { background: color-mix(in srgb, var(--card-accent) 25%, transparent); }
+.barpair__chip--b { background: color-mix(in srgb, var(--card-fg) 18%, transparent); }
+.barpair__row { display: grid; gap: 0.3rem; min-width: 0; }
+/* the three "same" rows sit quiet and compact; the 311 row is the argument — bigger, louder */
+.barpair__row--same .barpair__track { height: 0.95rem; opacity: 0.82; }
+.barpair__row--same .barpair__label { opacity: 0.65; }
+.barpair__row--hero {
+  margin-top: 0.55rem; padding-top: 0.55rem;
+  border-top: 1px solid color-mix(in srgb, var(--card-fg) 22%, transparent);
+}
+.barpair__row--hero .barpair__label { opacity: 1; font-weight: 700; }
+.barpair__row--hero .barpair__track { height: 1.7rem; }
+.barpair__row--hero .barpair__num { font-size: var(--step-body); }
+.barpair__label { margin: 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
+.barpair__bars { display: grid; gap: 0.25rem; }
+.barpair__track {
+  display: flex; align-items: center; gap: 0.6rem;
+  height: 1.35rem; min-width: 0;
+}
+.barpair__track .barpair__fill { flex: 0 1 auto; min-width: 2%; }
+.barpair__fill { height: 100%; border-radius: 3px; width: 0%; }
+.barpair__track--a .barpair__fill { background: var(--card-accent); }
+.barpair__track--b .barpair__fill { background: color-mix(in srgb, var(--card-fg) 72%, transparent); }
+/* per-bar hood tag — color + name, no deduction needed */
+.barpair__tag {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
+  opacity: 0.75; white-space: nowrap;
+}
+.barpair__num {
+  font-variant-numeric: tabular-nums; font-weight: 700; font-size: var(--step-kicker);
+  white-space: nowrap;
+}
+
+/* ---- v2 denominator (Insight 2: the broken fraction) ---- */
+.denominator__panel { display: grid; gap: 0.7rem; overflow-y: auto; inline-size: min(52ch, 100%); }
+.denominator__panel .display { font-size: clamp(1.4rem, 5.5cqi, 2.4rem); }
+.denominator__fraction { display: flex; gap: 2.2rem; justify-content: center; align-items: start; flex-wrap: wrap; }
+.denominator__frac {
+  display: grid; justify-items: center; gap: 0.3rem;
+  font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.denominator__frac .denominator__num, .denominator__frac .denominator__den {
+  font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1; letter-spacing: -0.02em;
+}
+.denominator__frac .denominator__den {
+  font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1; letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--sf-bay-blue) 72%, white);
+}
+.denominator__rule { width: 100%; height: 4px; border-radius: 2px; background: var(--card-fg); }
+.denominator__result {
+  font-size: clamp(1.2rem, 6cqi, 1.9rem); line-height: 1;
+  color: color-mix(in srgb, var(--sf-bay-blue) 72%, white); opacity: 0;
+}
+.denominator__qmark {
+  font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1;
+  color: color-mix(in srgb, var(--sf-bay-blue) 72%, white);
+  animation: denominator-breathe 2.2s ease-in-out infinite;
+}
+@keyframes denominator-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.denominator__label {
+  margin: 0; max-width: 16ch; text-align: center; font-size: var(--step-kicker);
+  line-height: 1.45; opacity: 0.85; overflow-wrap: anywhere;
+}
+
+/* ---- v2 pale-out (Insight 3: 43% clean) ---- */
+.paleout__panel { display: grid; gap: 0.5rem; overflow-y: auto; inline-size: min(52ch, 100%); align-content: start; }
+.paleout__panel .display { font-size: clamp(1.4rem, 5.5cqi, 2.4rem); }
+/* number + sentence flow as one unit: the % is never orphaned at a line/section break */
+.paleout__stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.45rem; margin: 0.4rem 0 0; min-width: 0; }
+.paleout__stat .paleout__num { font-size: clamp(2rem, 16cqi, 3.6rem); }
+.paleout__statline { font-size: var(--step-body); opacity: 0.92; overflow-wrap: anywhere; min-width: 0; }
+.paleout__statline strong { font-weight: 700; }
+.paleout__legend { margin: 0.55rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.03em; line-height: 1.5; opacity: 0.8; overflow-wrap: anywhere; }
+.paleout__panel .beat__body { font-size: var(--step-kicker); margin-top: 0.2rem; }
 
 /* ---- Divergence beat ---- */
 .divergence { display: grid; gap: 0.7rem; }
@@ -106,6 +243,8 @@
 .hexbin-fallback { margin: 0.6rem 0 0; color: var(--paper); font-size: var(--step-body); opacity: 0.9; }
 
 /* stat chip (e.g., The Sweep's "7 in 10 blocks Excellent") */
+.hexbin-chips { display: flex; align-items: baseline; gap: 1.6rem; margin: 0.15rem 0 0.1rem; flex-wrap: wrap; min-width: 0; }
+.hexbin-chips .hexbin-chip { margin: 0; }
 .hexbin-chip { display: flex; align-items: baseline; gap: 0.45rem; margin: 0.15rem 0 0.1rem; min-width: 0; }
 .hexbin-chip strong {
   font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 9cqi, 2.6rem);
@@ -198,3 +337,8 @@
 .share__canvas { display: block; height: 100%; width: auto; max-width: 100%; }
 .share__dl { color: var(--sf-on-light); background: var(--card-fg); border: none; text-decoration: none; }
 .share__dl:hover { background: color-mix(in srgb, var(--card-fg) 85%, black); }
+
+/* short laptop screens: slide 1 drops the number strip entirely (the counts return on slides 2-3) */
+@media (max-height: 760px) {
+  .overture--compact .stats, .overture--compact .overture .stat__sub:last-child { display: none; }
+}

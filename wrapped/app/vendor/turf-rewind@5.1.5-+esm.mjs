@@ -1,0 +1,8 @@
+/**
+ * Bundled by jsDelivr using Rollup v4.62.2 and esbuild v0.28.1.
+ * Original file: /npm/@turf/rewind@5.1.5/main.es.js
+ *
+ * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
+ */
+import h from"./turf-clone@5.1.5-+esm.mjs";import f from"./turf-boolean-clockwise@5.1.5-+esm.mjs";import{featureEach as c,geomEach as m}from"./turf-meta@5.1.5-+esm.mjs";import{getCoords as a}from"./turf-invariant@5.1.5-+esm.mjs";import{isObject as p,featureCollection as b}from"./turf-helpers@5.1.5-+esm.mjs";function E(r,t){if(t=t||{},!p(t))throw new Error("options is invalid");var e=t.reverse||!1,i=t.mutate||!1;if(!r)throw new Error("<geojson> is required");if(typeof e!="boolean")throw new Error("<reverse> must be a boolean");if(typeof i!="boolean")throw new Error("<mutate> must be a boolean");i===!1&&(r=h(r));var l=[];switch(r.type){case"GeometryCollection":return m(r,function(u){n(u,e)}),r;case"FeatureCollection":return c(r,function(u){c(n(u,e),function(y){l.push(y)})}),b(l)}return n(r,e)}function n(r,t){var e=r.type==="Feature"?r.geometry.type:r.type;switch(e){case"GeometryCollection":return m(r,function(i){n(i,t)}),r;case"LineString":return w(a(r),t),r;case"Polygon":return o(a(r),t),r;case"MultiLineString":return a(r).forEach(function(i){w(i,t)}),r;case"MultiPolygon":return a(r).forEach(function(i){o(i,t)}),r;case"Point":case"MultiPoint":return r}}function w(r,t){f(r)===t&&r.reverse()}function o(r,t){f(r[0])!==t&&r[0].reverse();for(var e=1;e<r.length;e++)f(r[e])===t&&r[e].reverse()}export{E as default};
+//# sourceMappingURL=/sm/8bc4f853bdbc42f4af2030472c13ccd26ba4b3f8bcdb127e511553b1324f5c95.map

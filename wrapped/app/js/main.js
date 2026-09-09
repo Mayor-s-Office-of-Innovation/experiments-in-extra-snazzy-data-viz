@@ -3,6 +3,7 @@
 // a manifest entry. Nothing else changes.
 
 import { story } from './story.js';
+import { story as storyV2 } from './story.v2.js';
 import * as data from './data.js';
 import { StoryMachine } from './state.js';
 import './condition-map.js';
@@ -17,6 +18,9 @@ import './cards/algorithm-card.js';
 import './cards/equity-card.js';
 import './cards/pickneighborhood-card.js';
 import './cards/caveats-card.js';
+import './cards/barpair-card.js';
+import './cards/denominator-card.js';
+import './cards/paleout-card.js';
 
 // manifest `type` -> custom element tag
 const CARD_TAGS = {
@@ -29,6 +33,9 @@ const CARD_TAGS = {
   equity: 'card-equity',
   pickhood: 'card-pickneighborhood',
   caveats: 'card-caveats',
+  barpair: 'card-barpair',
+  denominator: 'card-denominator',
+  paleout: 'card-paleout',
 };
 
 const tagFor = (type) => {
@@ -36,6 +43,9 @@ const tagFor = (type) => {
   if (!tag) throw new Error(`No card registered for type "${type}" (add to CARD_TAGS)`);
   return tag;
 };
+
+// ?story=v2 → the pitch-deck manifest (story.v2.js); default stays the v1 Wrapped arc.
+const manifest = new URL(location.href).searchParams.get('story') === 'v2' ? storyV2 : story;
 
 async function boot() {
   try {
@@ -54,7 +64,7 @@ async function boot() {
   try { await map.ready(); } catch (e) { console.warn('map geometry failed to load', e); }
 
   const machine = new StoryMachine({
-    manifest: story,
+    manifest,
     tagFor,
     map,
     mount: document.getElementById('cards'),
@@ -69,6 +79,7 @@ async function boot() {
 
   // Warm the WebGL hero's libs during idle so "The Snapshots" doesn't stall on first view.
   // Skip if the SVG engine is forced (?hexbin=svg) — then deck.gl is never needed.
+  // (v2's first hexbin card uses the same engines, so the warm helps both stories.)
   if (new URL(location.href).searchParams.get('hexbin') !== 'svg') {
     const warm = () => import('./render/hexbin-webgl.js').then((m) => m.preload?.()).catch(() => {});
     (window.requestIdleCallback || ((f) => setTimeout(f, 1500)))(warm);
