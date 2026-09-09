@@ -3,7 +3,6 @@
 // a manifest entry. Nothing else changes.
 
 import { story } from './story.js';
-import { story as storyV2 } from './story.v2.js';
 import * as data from './data.js';
 import { StoryMachine } from './state.js';
 import './condition-map.js';
@@ -44,8 +43,9 @@ const tagFor = (type) => {
   return tag;
 };
 
-// ?story=v2 → the pitch-deck manifest (story.v2.js); default stays the v1 Wrapped arc.
-const manifest = new URL(location.href).searchParams.get('story') === 'v2' ? storyV2 : story;
+// The manifest: v1 (story.js) by default; a per-URL boot file (e.g. boot-v2.js) can set
+// window.BOOT_MANIFEST before this module evaluates — see wrapped/app2/.
+const manifest = window.BOOT_MANIFEST ?? story;
 
 async function boot() {
   try {
