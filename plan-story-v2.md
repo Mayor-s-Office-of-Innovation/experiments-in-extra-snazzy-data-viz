@@ -154,13 +154,12 @@ data-backed statements ("A lot of streets are clean"), never exhortations ("Why 
   (clearly sparse at ~2–3 visits/week — inspect the bake before committing). Schematic
   "illustration, not data" version possible but flagged as high misread-risk.
 - Hue assignments for the 9 slides (reuse token palette; finale flood color TBD).
-- **Initial-load latency (user-observed, 2026-09-09):** first paint + first hexbin view are slow.
-  Suspects: 3.3 MB `conditions.json` + 3.7 MB vendored deck.gl graph + sf_map.json all before
-  interactivity. Address AFTER all slides are locked — candidates: split conditions.json per
-  story (v1/v2 don't need the same slices), ship only needed vendor bundles (core+geo+layers ≈
-  555K of the 3.7 MB), compress static assets (`gzip -k` / brotli if the host allows), defer
-  sf_map until a map card is near, lazy-mount cards one-ahead. Measure with a clean profile
-  before/after.
+- **Initial-load latency — ✅ DONE (2026-09-09).** Shipped: per-story data slice (v2 0.34 MB vs
+  3.3 MB); vendor graph tree-shaken by esbuild into ONE 3.24 MB bundle (`deck-all.mjs`, 0.91 MB gz,
+  1 HTTP request instead of 87 — DCL stays 204 ms since it loads at idle); 40 precompressed .gz
+  assets (11.79 → 1.56 MB on compressing hosts). Verified: v2 9/9 cards + v1 hero render, zero
+  exceptions. Note: GitHub Pages CDN gzips text types; the committed .gz files serve on hosts
+  honoring precompressed assets.
 ## Contrast audit (WCAG AA, 2026-09-09)
 Computed pairs on the v2 deck (panel = ink 62% over each flood). All text ≥ 4.5:1 (or large-text ≥ 3:1):
 - White on panels: teal 9.53 · gold 7.12 · ink 15.87

@@ -1,8 +1,0 @@
-/**
- * Bundled by jsDelivr using Rollup v4.62.2 and esbuild v0.28.1.
- * Original file: /npm/@turf/clone@5.1.5/main.es.js
- *
- * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
- */
-function l(e){if(!e)throw new Error("geojson is required");switch(e.type){case"Feature":return u(e);case"FeatureCollection":return f(e);case"Point":case"LineString":case"Polygon":case"MultiPoint":case"MultiLineString":case"MultiPolygon":case"GeometryCollection":return c(e);default:throw new Error("unknown GeoJSON type")}}function u(e){var t={type:"Feature"};return Object.keys(e).forEach(function(r){switch(r){case"type":case"properties":case"geometry":return;default:t[r]=e[r]}}),t.properties=i(e.properties),t.geometry=c(e.geometry),t}function i(e){var t={};return e&&Object.keys(e).forEach(function(r){var n=e[r];typeof n=="object"?n===null?t[r]=null:n.length?t[r]=n.map(function(a){return a}):t[r]=i(n):t[r]=n}),t}function f(e){var t={type:"FeatureCollection"};return Object.keys(e).forEach(function(r){switch(r){case"type":case"features":return;default:t[r]=e[r]}}),t.features=e.features.map(function(r){return u(r)}),t}function c(e){var t={type:e.type};return e.bbox&&(t.bbox=e.bbox),e.type==="GeometryCollection"?(t.geometries=e.geometries.map(function(r){return c(r)}),t):(t.coordinates=o(e.coordinates),t)}function o(e){return typeof e[0]!="object"?e.slice():e.map(function(t){return o(t)})}export{l as default};
-//# sourceMappingURL=/sm/c497333419eb47764e6f1fd853ec143bd3679e4844e4c54226752e5efb85101f.map

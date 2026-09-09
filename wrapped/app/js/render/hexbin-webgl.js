@@ -25,33 +25,23 @@ const coverageAt = (t) => {
 const COVERAGE_RGBA = (v, max) => (v <= 0 ? [56, 66, 74, 80] : coverageAt(Math.pow(v / max, 0.5)));
 
 const CITY = { longitude: -122.4194, latitude: 37.7749 };
-// Self-hosted ESM bundles (jsDelivr +esm builds, dependency graph vendored + rewritten to
-// relative paths — see wrapped/app/vendor/). esm.sh rotted (408s, 2026-09-09) and took both
-// decks' WebGL with it; local bundles make the hero offline-capable for the pitch room.
-const CORE_URL = '../../vendor/deck.gl-core@9.4.0-+esm.mjs';
-const GEO_URL = '../../vendor/deck.gl-geo-layers@9.4.0-+esm.mjs';
-const LAYERS_URL = '../../vendor/deck.gl-layers@9.4.0-+esm.mjs';
-const H3_URL = '../../vendor/h3-js@4.5.0-+esm.mjs';
+// Self-hosted, tree-shaken single bundle (esbuild over the vendored jsDelivr graph — exports only
+// Deck/MapView/H3HexagonLayer/PathLayer/cellToParent). One HTTP request instead of 87; same gz size.
+const BUNDLE_URL = '../../vendor/deck-all.mjs';
+const H3_URL = BUNDLE_URL;   // cellToParent ships in the same bundle
 const AGG_RES = 9;          // res-10 → res-9 (~175m cells): visible citywide, finer grain
 const MAX_ELEV_M = 650;     // metres the tallest column rises
 const ease = (t) => 1 - Math.pow(1 - t, 3);
 
-// Warm the CDN module cache during idle so the hero card doesn't pay the ~150KB deck.gl + h3-js
-// import cost on first view (the "slide 4 starts slow, but not after reload" delay). Same URLs the
-// mount() dynamic-imports, so those resolve instantly once this has run.
+// Warm the module cache during idle so the hero card doesn't pay the bundle cost on first view.
 export function preload() {
-  return Promise.all([import(/* @vite-ignore */ CORE_URL), import(/* @vite-ignore */ GEO_URL), import(/* @vite-ignore */ LAYERS_URL), import(/* @vite-ignore */ H3_URL)]).catch(() => {});
+  return import(/* @vite-ignore */ BUNDLE_URL).catch(() => {});
 }
 
 export async function mount(container, { hexes, outlines = [], camera = {}, mode = 'severe', reducedMotion = false }) {
   let Deck, MapView, H3HexagonLayer, PathLayer, cellToParent, deck = null;
   try {
-    // vendored subpackage bundles (see ../../vendor/): Deck/MapView live in core;
-    // H3HexagonLayer in geo-layers; PathLayer in layers; cellToParent in h3-js
-    ({ Deck, MapView } = await import(/* @vite-ignore */ CORE_URL));
-    ({ H3HexagonLayer } = await import(/* @vite-ignore */ GEO_URL));
-    ({ PathLayer } = await import(/* @vite-ignore */ LAYERS_URL));
-    ({ cellToParent } = await import(/* @vite-ignore */ H3_URL));
+    ({ Deck, MapView, H3HexagonLayer, PathLayer, cellToParent } = await import(/* @vite-ignore */ BUNDLE_URL));
   } catch (err) {
     const msg = document.createElement('p');
     msg.className = 'hexbin-fallback';
