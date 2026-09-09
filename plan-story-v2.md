@@ -122,8 +122,12 @@ data-backed statements ("A lot of streets are clean"), never exhortations ("Why 
    311" time series — see Open items.)
 6. **Pale-out map** (slide 6). Dot stipple citywide; 2,617 dots pale, count-up to 43%.
 7. **Verdict + finale** (slides 7–8). Beat cards; finale with pulled-back camera + caveat strip.
-8. **Verify & polish.** Headless screenshots per card (both stories), reduced-motion pass,
-   mobile spot-check, contrast check on new hues, `dashboard-review` skill before release.
+8. **Verify & polish. ✅ DONE (2026-09-09).** Contrast audit (all text pairs AA; blue ? fixed
+   2.50→5.94 — see Contrast audit section). Reduced-motion pass: v1 (12) + v2 (9) cards, zero
+   exceptions, end-states verified. Dashboard-review audit → `wrapped/story-v2-review.md`
+   (figure trace ALL PASS; findings 1+2 resolved via per-card provenance footer + anchor doc
+   `app2/sources.md`; findings 3–7 open, low). Mobile pass: panels dock bottom <700px, map
+   plane lifted, chevron controls centered + disabled at ends.
 
 ## Verification
 

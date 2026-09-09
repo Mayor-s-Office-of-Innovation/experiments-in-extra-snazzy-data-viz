@@ -70,7 +70,7 @@ export class CardBase extends HTMLElement {
     a.target = '_blank';
     a.rel = 'noopener';
     a.dataset.noAdvance = '';
-    a.textContent = 'figures: source & method';
+    a.textContent = 'figures: source & method · Jan 30 – Jun 8, 2026';
     this.append(a);
   }
 
