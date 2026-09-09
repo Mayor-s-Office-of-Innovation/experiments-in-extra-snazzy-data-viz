@@ -172,16 +172,16 @@
 }
 .denominator__frac .denominator__den {
   font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1; letter-spacing: -0.02em;
-  color: color-mix(in srgb, var(--sf-bay-blue) 72%, white);
+  color: color-mix(in srgb, var(--sf-bay-blue) 20%, white);
 }
 .denominator__rule { width: 100%; height: 4px; border-radius: 2px; background: var(--card-fg); }
 .denominator__result {
   font-size: clamp(1.2rem, 6cqi, 1.9rem); line-height: 1;
-  color: color-mix(in srgb, var(--sf-bay-blue) 72%, white); opacity: 0;
+  color: color-mix(in srgb, var(--sf-bay-blue) 20%, white); opacity: 0;
 }
 .denominator__qmark {
   font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1;
-  color: color-mix(in srgb, var(--sf-bay-blue) 72%, white);
+  color: color-mix(in srgb, var(--sf-bay-blue) 20%, white);
   animation: denominator-breathe 2.2s ease-in-out infinite;
 }
 @keyframes denominator-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
@@ -351,3 +351,12 @@
 @media (max-height: 760px) {
   .overture--compact .stats, .overture--compact .overture .stat__sub:last-child { display: none; }
 }
+
+/* per-card provenance footer — tiny, quiet, does not compete with content */
+.card__source {
+  position: absolute; inset-inline: 0; bottom: calc(var(--pad) * 0.35);
+  text-align: center; font-family: var(--font-mono); font-size: var(--step-kicker);
+  letter-spacing: 0.08em; opacity: 0.55; color: var(--card-fg);
+  text-decoration: none; pointer-events: auto;
+}
+.card__source:hover { opacity: 0.9; text-decoration: underline; }

@@ -157,3 +157,12 @@ data-backed statements ("A lot of streets are clean"), never exhortations ("Why 
   555K of the 3.7 MB), compress static assets (`gzip -k` / brotli if the host allows), defer
   sf_map until a map card is near, lazy-mount cards one-ahead. Measure with a clean profile
   before/after.
+## Contrast audit (WCAG AA, 2026-09-09)
+Computed pairs on the v2 deck (panel = ink 62% over each flood). All text ≥ 4.5:1 (or large-text ≥ 3:1):
+- White on panels: teal 9.53 · gold 7.12 · ink 15.87
+- Kicker (55% gold→paper mix): teal 6.62 · gold 4.95
+- Bar tags 75% white: 6.17 · paleout legend 80% white: 6.74
+- Denominator blues: `?`/denominator/`50%` were 2.50 — **fixed** → 20% bay-blue + white mix = 5.94
+- Graphics pairs: green clean-hexes on the night plane 4.28 · sand coverage columns on ink 13.53 (both ≥ 3:1 non-text)
+Remaining watch item: gold kicker at 4.95 on gold panels is small-text AA only via the panel's
+paper mix — do not darken that panel further.
