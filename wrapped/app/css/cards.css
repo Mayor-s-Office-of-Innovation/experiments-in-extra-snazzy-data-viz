@@ -63,14 +63,23 @@
    slightly smaller display, questions are the PRIMARY content (largest after the title),
    numbers shrink to a strip */
 .overture--compact .display { font-size: clamp(1.9rem, 8cqi, 3.2rem); }
-.overture--compact { gap: 0.65rem; align-content: center; place-content: safe center; }   /* tight gap + never overflow the top */
-.overture--compact .overture__questions { gap: 0.55rem; max-width: 30rem; }
+/* rows: header / questions / foot / stats / window — the v1 `auto 1fr auto` template let the
+   questions row STRETCH on tall phone screens (1fr row balloons, lis stretch, giant gaps).
+   Compact variant hugs content instead: every row auto-sized. */
+.overture--compact { grid-template-rows: none; gap: 1rem; align-content: safe center; }
+.overture--compact .overture__questions { gap: 0.35rem; max-width: 30rem; }             /* tight WITHIN the list */
 .overture--compact .overture__questions li {
   font-size: clamp(1.05rem, 4.2cqi, 1.45rem); font-weight: 600; line-height: 1.28;
   align-items: baseline;   /* number sits on the same baseline as the first text line */
 }
 .overture--compact .overture__questions li::before {
   font-size: 1.5em; line-height: 1;   /* no extra leading → baseline aligns with the text */
+}
+/* phones: the 4.2cqi clamp bottoms out → each question wraps to 3 tall lines. Tighten
+   the list there so the numbered block doesn't sprawl. */
+@media (max-width: 700px) {
+  .overture--compact .overture__questions { gap: 0.25rem; max-width: none; }
+  .overture--compact .overture__questions li { font-size: 1rem; line-height: 1.22; }
 }
 .overture--compact .stats {
   grid-template-columns: 1fr 1fr; gap: 0 2rem; align-content: end;

@@ -29,10 +29,14 @@
 
   <!-- Controls -->
   <div class="controls" role="group" aria-label="Story controls">
-    <button id="prev" class="btn" type="button" aria-label="Previous card">‹</button>
+    <button id="prev" class="btn btn--arrow" type="button" aria-label="Previous card" aria-hidden="false">
+      <svg class="btn__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 L8.5 12 L14.5 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <button id="autoplay" class="btn" type="button" aria-pressed="false"
             aria-label="Play automatically">▶ Auto</button>
-    <button id="next" class="btn" type="button" aria-label="Next card">›</button>
+    <button id="next" class="btn btn--arrow" type="button" aria-label="Next card">
+      <svg class="btn__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6 L15.5 12 L9.5 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </div>
 
   <script type="module" src="js/main.js"></script>

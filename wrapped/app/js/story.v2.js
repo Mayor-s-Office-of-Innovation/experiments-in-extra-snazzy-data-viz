@@ -56,9 +56,9 @@ export const story = [
   {
     id: 'insight2', type: 'denominator', hue: 'algorithm', align: 'end',
     kicker: 'Insight 2', title: 'A denominator changes the picture',
-    leftLabel: 'the app can state a rate',
+    leftLabel: '8 visits — 4 found waste: the rate is 50%',
     rightLabel: '311 can’t — no denominator',
-    body: '311 counts complaints. The app counts what staff saw on each visit — so it can state a rate.',
+    body: '311 counts complaints. The app counts what staff saw on each visit — so a block gets a rate, not just a tally.',
     map: { rotate: -8, tilt: 50, style: 'outline' },
   },
   {
@@ -70,7 +70,7 @@ export const story = [
       { t: 'Documenting conditions can establish a street is clean', d: 'in a way that documenting problems cannot.' },
       { t: 'City teams deserve credit', d: 'where credit is due — and media narratives shouldn’t be steered only by what’s wrong.' },
     ],
-    map: { rotate: 0, tilt: 54, style: 'outline' },
+    map: { rotate: 0, tilt: 54, style: 'outline', panY: -14 },
   },
 
   // ---- Close ----
@@ -85,7 +85,7 @@ export const story = [
     map: { rotate: -4, tilt: 50, style: 'outline' },
   },
   {
-    id: 'applications', type: 'beat', hue: 'turf', align: 'end',
+    id: 'applications', type: 'beat', hue: 'ink', align: 'end',
     kicker: 'If we scale it', title: 'Potential applications',
     items: [
       { t: 'Reveal hidden inequities', d: 'where 311 understates real need.' },

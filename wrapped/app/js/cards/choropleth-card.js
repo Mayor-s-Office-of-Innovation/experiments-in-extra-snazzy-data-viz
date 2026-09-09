@@ -68,9 +68,12 @@ class ChoroplethCard extends CardBase {
   }
 
   onExit() {
-    // the drain card (limits) re-applies these fills then fades them — don't clear underneath it
-    const next = document.querySelector('card-beat[active] .panel') ? [...document.querySelectorAll('card-beat')].find((c) => c.hasAttribute('active') && c._drain) : null;
-    if (!next) document.querySelector('condition-map')?.clearChoropleth();
+    // don't clear underneath an incoming card that styles the map inline itself — the drain
+    // beat re-applies + fades these fills, and the bar-pair sets per-hood colors; both enter
+    // BEFORE this exit runs, so clearing here would erase their work.
+    const mapStylers = [...document.querySelectorAll('card-beat, card-barpair')]
+      .filter((c) => c.hasAttribute('active') && (c._drain || c.tagName === 'CARD-BARPAIR'));
+    if (!mapStylers.length) document.querySelector('condition-map')?.clearChoropleth();
     return motion.play('fade-out', this);
   }
 }

@@ -70,6 +70,19 @@ body { transition: background-color var(--dur) var(--ease-out); }
   box-shadow: 0 24px 70px rgba(0,0,0,.35);
 }
 
+/* phones: dock ALL panels to the bottom so the background map stays visible above them.
+   Also slim the panels and lift+zoom the map plane so the visible band above the panel
+   actually shows the districts (mobile's #insight2/#insight3 panels are ~440-500px tall). */
+@media (max-width: 700px) {
+  .panel {
+    place-self: end center;
+    padding: clamp(0.9rem, 3.5vw, 1.4rem);      /* less panel padding → shorter panel */
+    padding-block-end: max(0.9rem, env(safe-area-inset-bottom) + 3.6rem);   /* clear the fixed nav */
+  }
+  condition-map { inset: 0 -12% 0 -12%; }       /* widen the plane → city reads bigger in the band */
+  .map-tilt { inset: -35% -12% -12% -12%; }     /* extra top bleed for the lift */
+}
+
 /* ---- controls ---- */
 .controls {
   position: fixed; inset-block-end: 0; inset-inline: 0; z-index: 30;
@@ -85,6 +98,22 @@ body { transition: background-color var(--dur) var(--ease-out); }
 }
 .btn:hover { background: color-mix(in srgb, var(--paper) 12%, transparent); }
 .btn:focus-visible { outline: 3px solid var(--cool); outline-offset: 2px; }
+
+/* prev/next: circles with an SVG chevron dead-center — SVG geometry is font-independent, so
+   flex centering is exact (no font-metric nudging). */
+.btn--arrow {
+  border-radius: 999px;
+  width: 44px; height: 44px;
+  padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.btn__chev { width: 22px; height: 22px; display: block; }   /* block inside flex → no baseline offset */
+.btn[disabled] {
+  opacity: 0.35; cursor: default; pointer-events: none;
+  background: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.btn[disabled]:hover { background: color-mix(in srgb, var(--ink) 40%, transparent); }
 
 /* clear, visible focus everywhere */
 :focus-visible { outline: 3px solid var(--cool); outline-offset: 2px; }

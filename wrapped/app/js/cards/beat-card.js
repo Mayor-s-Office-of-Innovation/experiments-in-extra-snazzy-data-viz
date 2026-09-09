@@ -71,10 +71,12 @@ class BeatCard extends CardBase {
     if (this._drain) {
       const map = document.querySelector('condition-map');
       map?.undrainChoropleth();
-      // clear ONLY if the incoming card isn't the choropleth (it re-applies fills itself on enter,
-      // but its onEnter runs BEFORE this onExit — clearing here would wipe them)
-      const choroActive = [...document.querySelectorAll('card-choropleth')].some((c) => c.hasAttribute('active'));
-      if (!choroActive) map?.clearChoropleth();
+      // clear ONLY if no incoming card is still styling the map inline. The choropleth re-applies
+      // its fills on enter (before this onExit), and the bar-pair sets per-hood colors — its
+      // onEnter also runs BEFORE this exit, so clearing here would wipe both (the "slide 5 both
+      // hoods same color when entering forward" bug).
+      const mapStylers = [...document.querySelectorAll('card-choropleth, card-barpair')].some((c) => c.hasAttribute('active'));
+      if (!mapStylers) map?.clearChoropleth();
     }
     return motion.play('fade-out', this);
   }

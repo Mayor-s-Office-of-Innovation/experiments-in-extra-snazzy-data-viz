@@ -79,12 +79,17 @@ class BarPairCard extends CardBase {
 
   onEnter() {
     motion.play('fade-up', this._panel);
-    // the two map highlights take the SAME colors as the two bar series below
+    // the two map highlights take the SAME colors as the two bar series below — concrete
+    // rgba components (no var()/color-mix in inline SVG styles; some browsers drop those)
     const map = document.querySelector('condition-map');
     if (map) {
-      const accent = getComputedStyle(this).getPropertyValue('--card-accent').trim() || '#e0a526';
-      const fg = getComputedStyle(this).getPropertyValue('--card-fg').trim() || '#f2f4f3';
-      map.setHoodColors({ [HOOD_A]: accent, [HOOD_B]: `color-mix(in srgb, ${fg} 72%, transparent)` });
+      const accent = parseColor(getComputedStyle(this).getPropertyValue('--card-accent'), [224, 165, 38]);
+      const fg = parseColor(getComputedStyle(this).getPropertyValue('--card-fg'), [242, 244, 243]);
+      // Mission's bar is fg at 72% over the panel — bake that mix here so the map gets one
+      // flat rgba (no nested color-mix, which some mobile browsers ignore)
+      const b = fg.map((v, i) => Math.round(v * 0.72 + 20 * 0.28 * (i === 3 ? 1 : 0)));
+      map.setHoodColors({ [HOOD_A]: { r: accent[0], g: accent[1], b: accent[2] },
+        [HOOD_B]: { r: b[0], g: b[1], b: b[2] } });
     }
     // bars grow staggered, then the numbers count up
     this._rows.forEach((row, i) => {
@@ -106,5 +111,16 @@ class BarPairCard extends CardBase {
 }
 
 const pct = (cam) => (cam?.obs ? Math.round(100 * (cam.obs_with_signal || 0) / cam.obs) : 0);
+
+// parse any css color string to [r,g,b] components (fallback on failure)
+function parseColor(css, fallback) {
+  const el = document.createElement('i');
+  el.style.color = css.trim();
+  document.body.append(el);
+  const m = getComputedStyle(el).color.match(/[\d.]+/g) || [];
+  el.remove();
+  const [r, g, b] = m.slice(0, 3).map(Number);
+  return m.length >= 3 && [r, g, b].every(Number.isFinite) ? [r, g, b] : fallback;
+}
 
 customElements.define('card-barpair', BarPairCard);

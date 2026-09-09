@@ -92,3 +92,8 @@ condition-map[data-hidden] { opacity: 0; }
   .map-pin { animation: none; }
   .map-tilt, .map-camera { transition: none !important; }
 }
+
+/* phones: lift the plane into the clear band above the bottom-docked panel */
+@media (max-width: 700px) {
+  .map-tilt { translate: 0 -6%; }
+}

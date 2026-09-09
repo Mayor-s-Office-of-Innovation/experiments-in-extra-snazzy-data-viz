@@ -145,14 +145,15 @@ class ConditionMap extends HTMLElement {
   }
 
   // Per-hood highlight colors on the FILLED style (e.g. match a card's bar colors 1:1).
-  // Unlike setChoropleth this keeps the is-active glow logic — only fill/stroke are overridden.
+  // Values are CONCRETE css colors (rgb/rgba strings) — no var()/nested color-mix, which some
+  // browsers drop (leaving the default gold on every active hood). Keeps is-active glow logic.
   setHoodColors(colorsByName = {}) {
     for (const [name, p] of Object.entries(this._paths)) {
       const c = colorsByName[name];
       if (c && p.classList.contains('is-active')) {
-        p.style.fill = `color-mix(in srgb, ${c} 46%, transparent)`;
-        p.style.stroke = c;
-        p.style.filter = `drop-shadow(0 0 14px color-mix(in srgb, ${c} 70%, transparent))`;
+        p.style.fill = `rgba(${c.r},${c.g},${c.b},0.46)`;
+        p.style.stroke = `rgb(${c.r},${c.g},${c.b})`;
+        p.style.filter = `drop-shadow(0 0 14px rgba(${c.r},${c.g},${c.b},0.7))`;
       }
     }
   }
