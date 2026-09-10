@@ -7,14 +7,25 @@ import * as data from '../data.js';
 import * as motion from '../motion.js';
 
 // sand → amber (light→dark), validated ordinal on the crowd/green flood
-const RAMP = ['#f2e6c4', '#e6c179', '#d29a3b', '#b0741d', '#7c4d12'].map((h) =>
+export const RAMP = ['#f2e6c4', '#e6c179', '#d29a3b', '#b0741d', '#7c4d12'].map((h) =>
   [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
-const rampAt = (t) => {
+export const rampAt = (t) => {
   t = Math.max(0, Math.min(1, t));
   const seg = t * (RAMP.length - 1), i = Math.min(RAMP.length - 2, Math.floor(seg)), f = seg - i;
   const a = RAMP[i], b = RAMP[i + 1];
   return `rgb(${Math.round(a[0] + (b[0] - a[0]) * f)},${Math.round(a[1] + (b[1] - a[1]) * f)},${Math.round(a[2] + (b[2] - a[2]) * f)})`;
 };
+
+// per-hood 311 totals → fill colors (sqrt scale). Exported so v2's drain card can re-apply
+// the same fills independently of slide order (drain needs fills present to fade them).
+export function complaintFills() {
+  const hoods = data.hoods();
+  const totals = Object.fromEntries(Object.entries(hoods).map(([n, v]) => [n, (v.crowd || {}).total || 0]));
+  const max = Math.max(1, ...Object.values(totals));
+  const fill = {};
+  for (const [n, t] of Object.entries(totals)) if (t > 0) fill[n] = rampAt(Math.sqrt(t / max));
+  return fill;
+}
 
 class ChoroplethCard extends CardBase {
   render() {
@@ -23,15 +34,11 @@ class ChoroplethCard extends CardBase {
     if (s.align) this.dataset.align = s.align;
 
     // per-hood 311 totals → colors (sqrt scale compresses the Mission outlier)
-    const hoods = data.hoods();
-    const totals = Object.fromEntries(Object.entries(hoods).map(([n, v]) => [n, (v.crowd || {}).total || 0]));
-    const max = Math.max(1, ...Object.values(totals));
-    this._fill = {};
-    for (const [n, t] of Object.entries(totals)) if (t > 0) this._fill[n] = rampAt(Math.sqrt(t / max));
+    this._fill = complaintFills();
 
     const panel = this.h('div', { class: 'panel' });
     panel.append(this.h('p', { class: 'kicker', text: s.kicker || '' }));
-    panel.append(this.h('h2', { class: 'display', text: s.title || '' }));
+    if (s.title) panel.append(this.h('h2', { class: 'display', text: s.title }));
 
     const hl = data.headline();
     const num = this.h('span', { class: 'stat__num' });
@@ -61,7 +68,12 @@ class ChoroplethCard extends CardBase {
   }
 
   onExit() {
-    document.querySelector('condition-map')?.clearChoropleth();
+    // don't clear underneath an incoming card that styles the map inline itself — the drain
+    // beat re-applies + fades these fills, and the bar-pair sets per-hood colors; both enter
+    // BEFORE this exit runs, so clearing here would erase their work.
+    const mapStylers = [...document.querySelectorAll('card-beat, card-barpair')]
+      .filter((c) => c.hasAttribute('active') && (c._drain || c.tagName === 'CARD-BARPAIR'));
+    if (!mapStylers.length) document.querySelector('condition-map')?.clearChoropleth();
     return motion.play('fade-out', this);
   }
 }

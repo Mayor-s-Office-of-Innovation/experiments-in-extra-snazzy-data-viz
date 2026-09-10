@@ -19,12 +19,26 @@ const darken = (css, k) => {
   return `rgb(${(r * k) | 0},${(g * k) | 0},${(b * k) | 0})`;
 };
 
-export function mount(container, { hexes, hoods = {}, hexR = 5, viewBox, camera = {}, reducedMotion = false }) {
+export function mount(container, { hexes, hoods = {}, hexR = 5, viewBox, camera = {}, mode = 'severe', reducedMotion = false }) {
   const W = viewBox?.w || 1000, H = viewBox?.h || 1002;
   const rot = ((camera.rotate || 0) * Math.PI) / 180;
   const tilt = ((camera.tilt || 55) * Math.PI) / 180;
   const cosR = Math.cos(rot), sinR = Math.sin(rot), cosT = Math.cos(tilt);
-  const max = Math.max(1, ...hexes.map((h) => h.n_severe || 0));
+  const coverage = mode === 'coverage';
+  const valueOf = (h) => (coverage ? (h.n || 0) : (h.n_severe || 0));
+  const max = Math.max(1, ...hexes.map(valueOf));
+  // coverage mode: single-hue blue columns (same ramp as the WebGL engine's coverage mode)
+  const coverageColor = (t) => {
+    const RAMP = ['#274a63', '#2f5f80', '#3a7aa4', '#4f96c0', '#6fb3d9'];
+    t = Math.max(0, Math.min(1, t)) * (RAMP.length - 1);
+    const i = Math.min(RAMP.length - 2, Math.floor(t)), f = t - i;
+    return RAMP[i] === RAMP[i + 1] ? RAMP[i] : mix(RAMP[i], RAMP[i + 1], f);
+  };
+  const mix = (a, b, f) => {
+    const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+    const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+    return `rgb(${pa.map((v, i) => Math.round(v + (pb[i] - v) * f)).join(',')})`;
+  };
 
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('preserveAspectRatio', 'none');   // viewBox tracks px 1:1, so no distortion
@@ -52,6 +66,7 @@ export function mount(container, { hexes, hoods = {}, hexR = 5, viewBox, camera 
       return [w / 2 + rx * s, anchorY + ry * cosT * s];
     };
     const footprint = (hx) => HEX_ANGLES.map((a) => project(hx.x + hexR * Math.cos(a), hx.y + hexR * Math.sin(a)));
+    const groundFill = coverage ? '#274a63' : CALM;
 
     drift.textContent = '';
 
@@ -78,14 +93,14 @@ export function mount(container, { hexes, hoods = {}, hexR = 5, viewBox, camera 
     for (const hx of hexes) {
       const p = document.createElementNS(NS, 'polygon');
       p.setAttribute('points', footprint(hx).map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' '));
-      p.setAttribute('fill', CALM);
+      p.setAttribute('fill', groundFill);
       ground.append(p);
     }
     drift.append(ground);
 
     // columns: painter's order back→front so nearer columns paint over
     const rows = hexes
-      .map((hx) => ({ hx, v: hx.n_severe || 0 }))
+      .map((hx) => ({ hx, v: valueOf(hx) }))
       .filter((r) => r.v > 0)
       .map((r) => ({ ...r, base: project(r.hx.x, r.hx.y) }))
       .sort((a, b) => a.base[1] - b.base[1]);
@@ -96,7 +111,7 @@ export function mount(container, { hexes, hoods = {}, hexR = 5, viewBox, camera 
       const rise = maxRise * heightFrac(v, max);
       const fp = footprint(hx);
       const cap = fp.map(([x, y]) => [x, y - rise]);
-      const fillC = colorFor(v, max);
+      const fillC = coverage ? coverageColor(Math.pow(v / max, 0.6)) : colorFor(v, max);
       const side = darken(fillC, 0.62);
       const g = document.createElementNS(NS, 'g');
       for (let i = 0; i < 6; i++) {

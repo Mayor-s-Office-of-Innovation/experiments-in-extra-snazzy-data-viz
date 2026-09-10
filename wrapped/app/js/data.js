@@ -5,7 +5,7 @@
 
 let _d = null;
 
-export async function load(url = '../data/conditions.json') {
+export async function load(url = window.BOOT_DATA_URL || '../data/conditions.json') {
   if (_d) return _d;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`conditions.json ${res.status}`);

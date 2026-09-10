@@ -71,12 +71,14 @@ export class StoryMachine {
     const m = this.manifest[this.index].map || {};
     this.map.apply({
       hood: m.hood ?? null,
+      hoods: m.hoods ?? null,                              // array form — light several neighborhoods
       rotate: m.rotate ?? 0,
       tilt: m.tilt ?? 54,
       frame: m.frame || 'city',
       style: m.style || 'outline',
       zoom: m.zoom,
       lean: m.lean,
+      leanX: m.leanX,                                     // horizontal-lean override (push map west/east)
       panY: m.panY ?? 0,                                  // was dropped here — the pin-clearing lift
       duration: m.duration || 750,                       // snappier; the move is the show
       easing: m.easing || 'cubic-bezier(.45,0,.15,1)',   // quick out, settled landing

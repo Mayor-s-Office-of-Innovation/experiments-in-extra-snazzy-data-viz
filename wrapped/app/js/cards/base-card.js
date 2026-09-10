@@ -31,7 +31,7 @@ export class CardBase extends HTMLElement {
   // _gen guards against a stale exit's "hide" firing after a fast re-activation.
   activate() {
     this._gen = (this._gen || 0) + 1;
-    if (!this._rendered) { this.render(); this._rendered = true; }
+    if (!this._rendered) { this.render(); this._rendered = true; this._addSourceLink(); }
     // clear any lingering enter/exit animations (fill:both) that would hold the card hidden
     this.getAnimations?.({ subtree: true }).forEach((a) => a.cancel());
     // Cards are appended in first-visit order, so DOM order ≠ nav order. Bump z-index on every
@@ -55,6 +55,24 @@ export class CardBase extends HTMLElement {
   render() { /* subclasses build DOM here */ }
   onEnter() { motion.enter(this); }
   onExit() { return motion.play('fade-out', this); }
+
+  // Every card gets a tiny provenance footer: "figures: source & method" → the per-card section
+  // of the anchor document (app2/sources.md). The anchor derives from the card's position in the
+  // v2 manifest; v1 (no BOOT_MANIFEST) skips it — sources.md documents the v2 deck's slides.
+  _addSourceLink() {
+    if (this.spec?.noSource) return;
+    const manifest = window.BOOT_MANIFEST || [];
+    const n = manifest.indexOf(this.spec) + 1;
+    if (!n) return;                                     // not a v2 card → no provenance footer
+    const a = document.createElement('a');
+    a.className = 'card__source';
+    a.href = `sources.md#slide-${n}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.dataset.noAdvance = '';
+    a.textContent = 'figures: source & method · Jan 30 – Jun 8, 2026';
+    this.append(a);
+  }
 
   // ---- small helpers for subclasses ----
   h(tag, attrs = {}, ...children) {

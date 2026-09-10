@@ -28,8 +28,17 @@ class HexbinCard extends CardBase {
     const prose = this.h('div', { class: 'hexbin-prose' });
     prose.append(this.h('p', { class: 'kicker', text: s.kicker || '' }));
     prose.append(this.h('h2', { class: 'display', text: s.title || '' }));
-    if (s.chip) prose.append(this.h('p', { class: 'hexbin-chip' }, this.h('strong', { text: s.chip.big || '' }),
-      this.h('span', { text: s.chip.label || '' })));
+    // one or two stat chips; two render side-by-side in a flex row (e.g. photos | blocks)
+    const chips = [s.chip, s.chip2].filter(Boolean);
+    if (chips.length) {
+      const row = this.h('div', { class: 'hexbin-chips' });
+      for (const c of chips) {
+        row.append(this.h('p', { class: 'hexbin-chip' },
+          this.h('strong', { text: c.big || '' }),
+          this.h('span', { text: c.label || '' })));
+      }
+      prose.append(row);
+    }
     if (s.body) prose.append(this.h('p', { class: 'beat__body', text: s.body }));
     if (s.caption) prose.append(this.h('p', { class: 'hexbin-caption', text: s.caption }));
     panel.append(prose);
@@ -41,10 +50,14 @@ class HexbinCard extends CardBase {
   async _ensureData() {
     if (this._hexes) return this._hexes.length > 0;
     try { await data.loadMap(); } catch (e) { console.warn('sf_map load failed', e); return false; }
-    this._hexes = data.mapHexes();
     this._hoods = data.mapHoods();
     this._outlines = data.mapOutlines();
     this._meta = data.mapMeta();
+    // geometry comes from sf_map.json (x/y, no visit counts); visit counts (n) live in
+    // conditions.json — merge them so both 'severe' and 'coverage' modes have their variable.
+    const geo = data.mapHexes();
+    const stats = new Map(data.hexes().map((h) => [h.h3, h]));
+    this._hexes = geo.map((g) => ({ ...g, ...(stats.get(g.h3) || {}) }));
     return this._hexes.length > 0;
   }
 
@@ -62,6 +75,7 @@ class HexbinCard extends CardBase {
       hexR: this._meta?.hexR || 5,
       viewBox: { w: this._meta?.w || 1000, h: this._meta?.h || 1002 },
       camera: { rotate: this.spec.map?.rotate || 0, tilt: this.spec.map?.tilt || 55 },
+      mode: this.spec.mode || 'severe',
       reducedMotion: reduced.matches,
     });
     if (token !== this._mountToken) { try { inst.destroy(); } catch {} return; }
