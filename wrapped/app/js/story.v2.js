@@ -40,6 +40,8 @@ export const story = [
     items: [
       { t: 'No denominator.', d: '50 cases may mean a bad block — or a well-documented one.' },
       { t: 'It can’t record a clean street.', d: 'Silence isn’t evidence.' },
+      { t: 'A complaint isn\'t a confirmed problem.', d: 'Many tickets closed as "No Work Needed".' },
+      { t: 'No accountability trail.', d: 'No way to validate whether closed tickets equates to addressed work.' },
     ],
     map: { rotate: -12, tilt: 50, style: 'choropleth' },
   },
@@ -48,7 +50,7 @@ export const story = [
   {
     id: 'insight1', type: 'barpair', hue: 'equity', align: 'end',
     kicker: 'Insight 1', title: 'Complaint volume doesn’t track conditions',
-    body: 'A budget that follows complaint volume follows civic voice, not street condition.',
+    body: 'Despite comparable observed conditions in the Mission and Bayview, the Mission received almost 5x the number of complaints. A budget that follows complaint volume follows civic voice, not street condition.',
     map: { rotate: 6, tilt: 48, style: 'filled', hoods: ['Bayview Hunters Point', 'Mission'], leanX: -6, panY: -20 },
   },
   {
