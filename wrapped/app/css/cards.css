@@ -129,23 +129,31 @@
 .barpair__chip--a { background: color-mix(in srgb, var(--card-accent) 25%, transparent); }
 .barpair__chip--b { background: color-mix(in srgb, var(--card-fg) 18%, transparent); }
 .barpair__row { display: grid; gap: 0.3rem; min-width: 0; }
-/* the three "same" rows sit quiet and compact; the 311 row is the argument — bigger, louder */
+/* the "same" row sits quiet and compact; the 311 row is the argument — bigger, louder.
+   --bar-w is capped relative to the panel (cqi): column 2 (count + hood tag) always keeps
+   its room, so labels/counts can't be pushed out of the clipped panel. */
+.barpair__row--same { --bar-w: clamp(90px, 42cqi, 200px); }
 .barpair__row--same .barpair__track { height: 0.95rem; opacity: 0.82; }
 .barpair__row--same .barpair__label { opacity: 0.65; }
 .barpair__row--hero {
   margin-top: 0.55rem; padding-top: 0.55rem;
   border-top: 1px solid color-mix(in srgb, var(--card-fg) 22%, transparent);
 }
+.barpair__row--hero { --bar-w: clamp(120px, 58cqi, 280px); }
 .barpair__row--hero .barpair__label { opacity: 1; font-weight: 700; }
 .barpair__row--hero .barpair__track { height: 1.7rem; }
 .barpair__row--hero .barpair__num { font-size: var(--step-body); }
 .barpair__label { margin: 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
 .barpair__bars { display: grid; gap: 0.25rem; }
 .barpair__track {
-  display: flex; align-items: center; gap: 0.6rem;
-  height: 1.35rem; min-width: 0;
+  display: grid; grid-template-columns: var(--bar-w, 100px) auto;
+  align-items: center; gap: 0.6rem; height: 1.35rem; min-width: 0;
+  justify-content: start;
 }
-.barpair__track .barpair__fill { flex: 0 1 auto; min-width: 2%; }
+/* the plot zone: every bar's fill grows inside the same fixed-width column, so widths are
+   exact proportions of each other and can't be squeezed by the count/tag text */
+.barpair__zone { position: relative; grid-column: 1; width: var(--bar-w, 100px); height: 100%; }
+.barpair__zone .barpair__fill { position: absolute; inset-block: 0; left: 0; width: 0%; min-width: 0; }
 .barpair__fill { height: 100%; border-radius: 3px; width: 0%; }
 .barpair__track--a .barpair__fill { background: var(--card-accent); }
 .barpair__track--b .barpair__fill { background: color-mix(in srgb, var(--card-fg) 72%, transparent); }

@@ -1,5 +1,7 @@
-// Insight 1 — Bayview vs Mission bar-pair. Four labeled rows (observations, % with an issue,
-// severe observations, 311 cases), each row two proportional bars (Bayview vs Mission).
+// Insight 1 — Bayview vs Mission bar-pair. Two labeled rows (severe observations, 311 cases),
+// each row two proportional bars (Bayview vs Mission). Both rows are raw counts on equivalent
+// axes — no percent-vs-count mixing. The visual asymmetry IS the argument: one near-identical
+// row (conditions), one catastrophically lopsided (complaints).
 // The visual asymmetry IS the argument: three near-identical rows, one catastrophically lopsided.
 // Numbers come from the bake via data.hood() — never hardcoded.
 import { CardBase } from './base-card.js';
@@ -23,8 +25,6 @@ class BarPairCard extends CardBase {
     const b311 = data.hood(HOOD_B)?.crowd?.total || 0;
 
     const rows = [
-      { label: 'photos taken by staff',       a: a.obs,             b: b.obs },
-      { label: 'found an issue',              a: pct(a),            b: pct(b), fmt: (v) => `${v}%` },
       { label: 'severe observations',         a: a.obs_with_severe, b: b.obs_with_severe },
       { label: '311 complaints',              a: a311,              b: b311, ratio: true },
     ];
@@ -42,20 +42,21 @@ class BarPairCard extends CardBase {
     this._rows = [];
     this._nums = [];
     const max = {
-      ab: Math.max(a.obs, b.obs),
-      issue: 100,
       sev: Math.max(a.obs_with_severe || 0, b.obs_with_severe || 0),
       c311: Math.max(a311, b311),
     };
     for (const [ri, r] of rows.entries()) {
-      // the 311 row is the argument — mark it so CSS can grow it and dim the three "same" rows
+      // the 311 row is the argument — mark it so CSS can grow it and dim the "same" row
       const hero = r.ratio ? ' barpair__row--hero' : ' barpair__row--same';
-      const m = r.ratio ? max.c311 : (r.label === 'found an issue' ? max.issue : (r.label === 'severe observations' ? max.sev : max.ab));
+      const m = r.ratio ? max.c311 : max.sev;
       const row = this.h('div', { class: `barpair__row${hero}` });
       row.append(this.h('p', { class: 'barpair__label', text: r.label }));
       const bars = this.h('div', { class: 'barpair__bars' });
       for (const [i, v] of [r.a, r.b].entries()) {
-        const track = this.h('div', { class: `barpair__track barpair__track--${i ? 'b' : 'a'}` });
+        // plot zone is a fixed 100ch grid column, so fill width % is exact: 85 vs 93 renders
+        // 91% vs 100%, and flex can't shrink the bar to make room for the count/tag (they
+        // live in their own column — width is proportional, never space-starved).
+        const zone = this.h('div', { class: 'barpair__zone' });
         const fill = this.h('div', { class: 'barpair__fill' });
         fill.dataset.w = String(Math.max(2, 100 * (v || 0) / m));   // min 2% so tiny bars stay visible
         const num = this.h('span', { class: 'barpair__num' });
@@ -64,8 +65,8 @@ class BarPairCard extends CardBase {
         this._nums.push({ num, fmt: r.fmt });
         // hood tag on every bar — never make the viewer deduce which color is which district
         const tag = this.h('span', { class: `barpair__tag barpair__tag--${i ? 'b' : 'a'}`, text: i ? HOOD_B_SHORT : HOOD_A_SHORT });
-        track.append(fill, num, tag);
-        bars.append(track);
+        zone.append(fill);
+        bars.append(this.h('div', { class: `barpair__track barpair__track--${i ? 'b' : 'a'}` }, zone, num, tag));
       }
       row.append(bars);
       panel.append(row);
@@ -109,8 +110,6 @@ class BarPairCard extends CardBase {
     return motion.play('fade-out', this);
   }
 }
-
-const pct = (cam) => (cam?.obs ? Math.round(100 * (cam.obs_with_signal || 0) / cam.obs) : 0);
 
 // parse any css color string to [r,g,b] components (fallback on failure)
 function parseColor(css, fallback) {
