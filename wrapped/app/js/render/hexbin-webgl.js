@@ -31,9 +31,9 @@ const BUNDLE_URL = '../../vendor/deck-all.mjs';
 const H3_URL = BUNDLE_URL;   // cellToParent ships in the same bundle
 const AGG_RES = 9;          // res-10 → res-9 (~175m cells): visible citywide, finer grain
 const MAX_ELEV_M = 650;     // metres the tallest severe column rises (v1 hero)
-const MAX_ELEV_COVERAGE_M = 5200;   // coverage mode (v2): ~9.6 m/px at the settled camera
-                                    // (zoom 12.65, pitch ~56°), so the stub needs a tall ceiling
-                                    // — 5200m puts the 0.24 log-floor at ~70px on screen.
+const MAX_ELEV_COVERAGE_M = 850;    // coverage mode (v2): tallest spike (n=673) rises this far.
+                                    // Overall-height knob; the log2+GAMMA curve in
+                                    // heightFracCoverage shapes the shorter tiers below it.
 const ease = (t) => 1 - Math.pow(1 - t, 3);
 
 // Warm the module cache during idle so the hero card doesn't pay the bundle cost on first view.
