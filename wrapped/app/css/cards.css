@@ -106,12 +106,12 @@
 /* v2 bullet lists inside beat panels — mono counter, bold lead-in, staggered fly-in.
    Wider than the default 38ch panel: bullets wrap less, panels stay short on laptop screens. */
 .beat__items { display: grid; gap: 0.55rem; margin: 0.5rem 0 0; padding: 0; list-style: none; counter-reset: b; min-width: 0; }
-.beat__items li {
+.beat__items > li {
   counter-increment: b; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.65rem;
   align-items: baseline;   /* counter sits on the first text line's baseline */
   font-size: var(--step-body); line-height: 1.4; opacity: 0.95; overflow-wrap: anywhere;
 }
-.beat__items li::before {
+.beat__items > li::before {
   content: counter(b, decimal-leading-zero); font-family: var(--font-mono);
   font-size: var(--step-kicker); color: var(--card-accent); letter-spacing: 0.08em;
 }
@@ -159,36 +159,81 @@
   white-space: nowrap;
 }
 
-/* ---- v2 denominator (Insight 2: the broken fraction) ---- */
-.denominator__panel { display: grid; gap: 0.7rem; overflow-y: auto; inline-size: min(52ch, 100%); }
-.denominator__panel .display { font-size: clamp(1.4rem, 5.5cqi, 2.4rem); }
-.denominator__fraction { display: flex; gap: 2.2rem; justify-content: center; align-items: start; flex-wrap: wrap; }
-.denominator__frac {
-  display: grid; justify-items: center; gap: 0.3rem;
-  font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums;
+/* ---- v2 timeline (Insight 2: one block, both records, one time axis) ---- */
+.timeline__panel { display: grid; gap: 0.5rem; overflow-y: auto; inline-size: min(78ch, 100%); align-self: end; }
+.timeline__panel .display { font-size: clamp(1.4rem, 5.5cqi, 2.4rem); }
+.timeline__where { margin: 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.04em; opacity: 0.85; overflow-wrap: anywhere; }
+.timeline__where strong { color: color-mix(in srgb, var(--card-accent) 55%, var(--paper)); }
+.tl { display: grid; grid-template-columns: minmax(12ch, 17ch) minmax(0, 1fr); gap: 0.45rem 0.9rem; align-items: center; margin-top: 0.35rem; }
+.tl__label { display: grid; gap: 0.1rem; font-size: var(--step-kicker); line-height: 1.25; opacity: 0.92; }
+.tl__label strong, .tl__num {
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 5cqi, 2rem);
+  line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
 }
-.denominator__frac .denominator__num, .denominator__frac .denominator__den {
-  font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1; letter-spacing: -0.02em;
+.tl__label--cases strong { color: var(--sf-golden-hills); }
+.tl__frac { display: flex; align-items: baseline; gap: 0.35rem; }
+.tl__num { color: #6fdc9a; }
+.tl__of { font-size: var(--step-body); font-weight: 700; }
+.tl__strip { width: 100%; display: block; overflow: visible; border-bottom: 1px solid color-mix(in srgb, var(--card-fg) 22%, transparent); }
+.tl__case { fill: var(--sf-golden-hills); opacity: 0.92; transform-box: fill-box; transform-origin: center; }
+.tl__visit { transform-box: fill-box; transform-origin: center; stroke: rgba(0, 0, 0, 0.35); stroke-width: 1.2; }
+.tl__visit--clean { fill: #6fdc9a; }
+.tl__visit--issue { fill: var(--sf-imperial-gold); }
+.tl__visit--severe { fill: var(--sf-sunset-coral); }
+.tl__axis { width: 100%; display: block; overflow: visible; }
+.tl__tick { stroke: color-mix(in srgb, var(--card-fg) 45%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.tl__month { fill: var(--card-fg); opacity: 0.7; font-family: var(--font-mono); font-size: 22px; text-anchor: middle; }
+.tl__legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin: 0.15rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker); opacity: 0.85; }
+.tl__key { display: inline-flex; align-items: center; gap: 0.4rem; }
+.tl__key::before { content: ''; width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.tl__key--case::before { background: var(--sf-golden-hills); width: 7px; height: 7px; }
+.tl__key--clean::before { background: #6fdc9a; }
+.tl__key--issue::before { background: var(--sf-imperial-gold); }
+.tl__key--severe::before { background: var(--sf-sunset-coral); }
+.timeline__panel .beat__body { margin-top: 0.3rem; }
+/* phones: labels stack above their strips so the time axis gets the full panel width */
+@media (max-width: 700px) {
+  .tl { grid-template-columns: 1fr; gap: 0.25rem; }
+  .tl > div:empty { display: none; }
+  .tl__label { grid-template-columns: auto 1fr; align-items: baseline; gap: 0.4rem; }
+  .tl__strip { margin-bottom: 0.35rem; }
 }
-.denominator__frac .denominator__den {
-  font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1; letter-spacing: -0.02em;
-  color: color-mix(in srgb, var(--sf-bay-blue) 20%, white);
+.timeline__foot { margin: 0.1rem 0 0; font-size: var(--step-kicker); opacity: 0.75; }
+
+/* ---- v2 close (verdict + "if we scale it" beats + agency tiles) ---- */
+.beat.close .panel.close__panel { display: grid; gap: 0.55rem; overflow-y: auto; inline-size: min(60ch, 100%); align-content: start; }
+.beat.close--wide .panel.close__panel { inline-size: min(96ch, 100%); }   /* verdict + tiles carry the doc's full text */
+@media (min-width: 1000px) {
+  .close--wide .tiles { grid-template-columns: repeat(3, 1fr); }
 }
-.denominator__rule { width: 100%; height: 4px; border-radius: 2px; background: var(--card-fg); }
-.denominator__result {
-  font-size: clamp(1.2rem, 6cqi, 1.9rem); line-height: 1;
-  color: color-mix(in srgb, var(--sf-bay-blue) 20%, white); opacity: 0;
+/* short laptop screens: the verbatim wording is long — tighten type and padding, never clip */
+@media (max-height: 800px) {
+  /* the stage padding (pad + 1.5rem top, pad + 3.5rem bottom) eats ~200px on a 720px screen —
+     the nav only needs ~70px, so reclaim the rest for the panel */
+  .cards > .close { padding-block: calc(var(--pad) * 0.5 + 1rem) calc(var(--pad) * 0.4 + 3.4rem); }
+  .beat.close .panel.close__panel { gap: 0.4rem; padding: 1.25rem 1.5rem; }
+  .close__panel .display { font-size: clamp(1.25rem, 4.5cqi, 1.8rem); }
+  .close--wide .beat__items > li { font-size: 1rem; }
+  .beat__sub li { font-size: 0.82rem; }
+  .tile { padding: 0.5rem 0.65rem; font-size: 0.8rem; line-height: 1.3; }
+  .tile strong { font-size: 0.92rem; }
 }
-.denominator__qmark {
-  font-size: clamp(2.2rem, 12cqi, 4rem); line-height: 1;
-  color: color-mix(in srgb, var(--sf-bay-blue) 20%, white);
-  animation: denominator-breathe 2.2s ease-in-out infinite;
+.close__panel .display { font-size: clamp(1.5rem, 5.5cqi, 2.5rem); }
+/* nested bullets under an answer (the agreed doc's sub-points) */
+.beat__sub { display: grid; gap: 0.3rem; margin: 0.35rem 0 0.15rem; padding: 0 0 0 0.9rem; list-style: none; border-left: 2px solid color-mix(in srgb, var(--card-accent) 45%, transparent); }
+.beat__sub li { font-size: var(--step-kicker); line-height: 1.4; opacity: 0.95; overflow-wrap: anywhere; }
+.beat__sub strong { font-weight: 700; margin-right: 0.35em; }
+/* agency tiles */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0.5rem 0 0; padding: 0; list-style: none; }
+.tile {
+  display: grid; gap: 0.2rem; align-content: start; padding: 0.65rem 0.8rem; border-radius: 10px;
+  background: color-mix(in srgb, var(--card-fg) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-fg) 14%, transparent);
+  font-size: var(--step-kicker); line-height: 1.35; overflow-wrap: anywhere;
 }
-@keyframes denominator-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
-.denominator__label {
-  margin: 0; max-width: 16ch; text-align: center; font-size: var(--step-kicker);
-  line-height: 1.45; opacity: 0.85; overflow-wrap: anywhere;
-}
+.tile strong { font-size: var(--step-body); color: color-mix(in srgb, var(--card-accent) 55%, var(--paper)); }
+.close__caveat { margin: 0.55rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.04em; opacity: 0.6; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .tiles { grid-template-columns: 1fr; } .tile { padding: 0.45rem 0.6rem; font-size: 0.8rem; } .tile strong { font-size: 0.95rem; } }
 
 /* ---- v2 pale-out (Insight 3: 43% clean) ---- */
 .paleout__panel { display: grid; gap: 0.5rem; overflow-y: auto; inline-size: min(52ch, 100%); align-content: start; }
@@ -198,7 +243,11 @@
 .paleout__stat .paleout__num { font-size: clamp(2rem, 16cqi, 3.6rem); }
 .paleout__statline { font-size: var(--step-body); opacity: 0.92; overflow-wrap: anywhere; min-width: 0; }
 .paleout__statline strong { font-weight: 700; }
-.paleout__legend { margin: 0.55rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.03em; line-height: 1.5; opacity: 0.8; overflow-wrap: anywhere; }
+.paleout__legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin: 0.45rem 0 0; font-family: var(--font-mono); font-size: var(--step-kicker); opacity: 0.85; }
+.paleout__key { display: inline-flex; align-items: center; gap: 0.45rem; }
+.paleout__key::before { content: ''; width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.paleout__key--clean::before { background: #6fdc9a; }
+.paleout__key--flag::before { background: color-mix(in srgb, var(--card-fg) 55%, transparent); }
 .paleout__panel .beat__body { font-size: var(--step-kicker); margin-top: 0.2rem; }
 
 /* ---- Divergence beat ---- */
@@ -329,6 +378,8 @@
 .caveats__item strong { color: var(--card-accent); }
 
 /* ---- Complaints choropleth legend ---- */
+.choropleth-card .choro-legend, .choropleth-card .beat__stat { transition: opacity 1.4s ease 0.3s; }
+.choropleth-card .panel.is-drained .choro-legend { opacity: 0.3; }
 .choro-legend { display: flex; align-items: center; gap: 0.5rem; margin: 0.7rem 0 0; }
 .choro-legend__bar {
   flex: 1; height: 10px; border-radius: 999px; min-width: 80px;
@@ -354,9 +405,38 @@
 
 /* per-card provenance footer — tiny, quiet, does not compete with content */
 .card__source {
-  position: absolute; inset-inline: 0; bottom: calc(var(--pad) * 0.35);
-  text-align: center; font-family: var(--font-mono); font-size: var(--step-kicker);
+  position: absolute; left: var(--pad); right: auto; bottom: calc(var(--pad) * 0.35 + 0.6rem);
+  max-width: none; white-space: nowrap; text-align: left; font-family: var(--font-mono); font-size: var(--step-kicker);
   letter-spacing: 0.08em; opacity: 0.55; color: var(--card-fg);
   text-decoration: none; pointer-events: auto;
 }
 .card__source:hover { opacity: 0.9; text-decoration: underline; }
+/* phones: centered, in the band between the docked panel and the nav */
+@media (max-width: 700px) {
+  .card__source { left: 0; right: 0; white-space: normal; text-align: center; bottom: calc(env(safe-area-inset-bottom) + 3.7rem); }
+}
+
+/* ---- big screens (1600px+): panels ran narrow and type small. The panel's own font-size
+   drives its ch-based width, so scaling it widens every panel; display/stat caps rise too. ---- */
+@media (min-width: 1600px) {
+  .panel { font-size: 1.2rem; }
+  .beat:has(.beat__items) .panel { inline-size: min(60ch, 100%); }
+  .barpair__panel, .paleout__panel { inline-size: min(56ch, 100%); }
+  .beat.close .panel.close__panel { inline-size: min(66ch, 100%); }
+  .beat.close--wide .panel.close__panel { inline-size: min(96ch, 100%); }
+  .timeline__panel { inline-size: min(84ch, 100%); }
+  .hexbin-card .panel { inline-size: min(46ch, 100%); }
+  .overture { max-width: min(92vw, 54rem); }
+  .overture--compact .display { font-size: clamp(2.2rem, 8cqi, 4rem); }
+  .overture--compact .overture__questions { max-width: 40rem; }
+  .overture--compact .overture__questions li { font-size: clamp(1.2rem, 4.2cqi, 1.8rem); }
+  .overture--compact .stat__num { font-size: clamp(1.4rem, 4.5cqi, 2.3rem); }
+  .barpair__panel .display, .timeline__panel .display, .paleout__panel .display { font-size: clamp(1.6rem, 5.5cqi, 3rem); }
+  .beat .display { font-size: clamp(1.8rem, 5vw, 3.1rem); }
+  .paleout__stat .paleout__num { font-size: clamp(2.4rem, 16cqi, 4.4rem); }
+  .beat__stat .stat__num { font-size: clamp(2.4rem, 26cqi, 5.4rem); }
+  .hexbin-chip strong { font-size: clamp(2rem, 9cqi, 3.2rem); }
+}
+@media (min-width: 2200px) {
+  .panel { font-size: 1.4rem; }
+}

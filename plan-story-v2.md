@@ -145,6 +145,56 @@ Deck is **8 slides** now (was 9). Per-card provenance footers renumber automatic
   verdict (state machine hides the plane via `data-hidden`, camera still pre-swings so the
   map re-enters settled). First + last slides and every map-*effect* slide keep the plane.
 
+## Round-2 revisions (2026-09-11, communication pass)
+
+Two slides weren't landing; both rebuilt on real data. The close went from 2 slides to 4, then re-aligned to the agreed wording as 3 (deck is 9).
+
+- **Slide 5 → the one-block timeline** (`timeline-card.js`, type `timeline`; the abstract
+  4/8 fraction card is retired). ONE H3 block, both records, one time axis Jan 30 – Jun 8:
+  row 1 = every comparable 311 complaint filed inside the hex polygon (one dot per case, stacked
+  per day); row 2 = every staff visit-day, colored by the worst rating that day. The empty space
+  between marks is the denominator. Block: `8a28308280e7fff`, Van Ness Ave & Market St
+  (Tenderloin) — 120 complaints on 67 days vs 15 visit-days, 12 with nothing wrong, 4 observers.
+  This is the "reality vs app vs 311" concept from the Open items, but EMPIRICAL: no reality
+  line is inferred, both rows are records. Pipeline: `sources/block.py` (needs `pip install h3`
+  + network; output committed) → `data/block.json` → `block_exhibit` in the bake + v2 slice.
+  Block choice ruled out single-observer blocks (the Larkin St candidates are 90%+ one person).
+- **Slide 6 → real streets + one dot per photo** (`paleout-card.js` rewritten; the dawn sweep
+  is gone). DataSF street centerlines baked into `data/sf_streets.json` by `make_map.py`
+  (`sources/streets.py` downloads the raw file, git-ignored); `sc.py` now bakes `n_clean` per
+  hex; the shell map gained `setStreets` / `setPhotoDots` / `litDots` / `pinAt`. 6,094 dots
+  drop onto their hexes, then the 2,617 clean ones turn green as the 43% counts up — picture
+  and number are the same measure (the old green hexes meant "no severe", a different one).
+  Camera = slide 2's angle. Reduced motion lands on the lit end state (the old path skipped
+  the hexes entirely — bug fixed by construction).
+- **Small fixes**: provenance footer moved bottom-left (it sat under the nav buttons); slide 3's
+  ramp legend fades with the map it explains once the drain fires; slide 4's `leanX` flipped
+  (+10 pushed Bayview off the right edge at laptop widths).
+- **Big screens**: at ≥1600px the panel font-size scales (panels are ch-sized, so they widen)
+  and the display/stat caps rise; ≥2200px steps up again. Verified at 1920×1080 and 2560×1440.
+- **Socrata host**: data.sfgov.org now 403s any `$where` query; `sf311.py` points at
+  data.sf.gov. `data/sf311.json` was NOT re-pulled (live data drifts; 167,819 stays locked).
+- New build steps: `slice_v2.py` (the v2 payload was previously cut by hand) and `compress.py`
+  (deterministic .gz siblings). `build_all.py` runs both.
+- **The close: 2 → 4 slides (deck is 10).** The project author suggested one slide per point
+  with photos behind; we had no rights-clean photos (no project photos; 311 media shows
+  problems and people; Street View can't be stored). Instead each closing slide reuses a map
+  state the deck already earned (`close-card.js`, type `close`): 7 verdict (answers with
+  evidence chips — live figures that deep-link back to slides 2/4/5/6; `state.js` now follows
+  hash changes) · 8 "Where 311 understates need" (slide 4's two hoods lit, facts strip) ·
+  9 "A baseline the city doesn't have today" (slide 6's streets + dots, lit) · 10 "Who would
+  use it" (six agency tiles + the caveat strip). Backgrounds are one manifest field, so city
+  photos can be swapped in later without rebuilding.
+- **Close re-aligned to the group's agreed wording (same day).** The 4-slide close had
+  paraphrased the Notion doc's §7–§9; reverted to the doc's text VERBATIM as three slides
+  (deck is **9**): 7 = §7 under our toned-down title "The three questions, answered" (the one
+  agreed deviation — the title rule holds), with the doc's sub-bullets (the evidence chips were
+  dropped the same day: not in the doc, and they crowded the layout);
+  8 = §8 ("This data can inform policy and operational decisions", the three bullets) over the
+  streets + dots map; 9 = §9 ("What are possible applications of this data?", six tiles headed
+  by the doc's bold leads, descriptions in full) + the caveat strip. Kickers are neutral labels
+  ("The verdict" / "Policy and operations" / "Applications"), not doc wording.
+
 ## Verification
 
 - `python3 -m http.server 8000` from `wrapped/` → `/app/` (v1) and `/app/?story=v2` (v2).
@@ -155,9 +205,11 @@ Deck is **8 slides** now (was 9). Per-card provenance footers renumber automatic
 ## Open items
 
 - Compute 311 hex/block coverage for slide 2? (pipeline add — only if team asks)
-- "Waste present on 4 of 8 visits" example hex: pick a real hex from the bake with exactly
-  8 visits / 4 waste-present if one exists (script the search); else use a real n/n pair.
-- **"Reality vs app vs 311" trend-line chart** (Beuadry comment on slide 5) — concept is right
+- ~~"Waste present on 4 of 8 visits" example hex~~ — superseded by the one-block timeline
+  (Round-2 revisions).
+- **"Reality vs app vs 311" trend-line chart** (Beuadry comment on slide 5) — **resolved
+  2026-09-11 as the empirical one-block timeline** (see Round-2 revisions): both rows are
+  records, nothing is inferred. Original analysis kept for the record — concept is right
   (unbiased sampler vs biased reporter), but the empirical version fails on our data:
   (1) the "reality" line would have to be reconstructed by extrapolating the app's own sample —
   circular, and assumes the app is an unbiased sampler, which our honesty rules forbid claiming;

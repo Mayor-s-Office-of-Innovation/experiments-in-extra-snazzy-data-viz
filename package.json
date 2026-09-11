@@ -1,0 +1,13 @@
+{
+  "name": "street-conditions-data-viz",
+  "private": true,
+  "description": "Streets — SF Street Conditions App vs 311, a static story site (no build step)",
+  "scripts": {
+    "start": "http-server wrapped -p 8000 -g -c-1 -o /app2/",
+    "start:v1": "http-server wrapped -p 8000 -g -c-1 -o /app/",
+    "build:data": "python3 wrapped/build/build_all.py"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

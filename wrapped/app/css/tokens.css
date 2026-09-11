@@ -61,3 +61,16 @@
 [data-hue="tenderloin"]{ --card-bg: var(--sf-cable-car-maroon);  --card-fg: var(--sf-on-dark);  --card-accent: var(--sf-sunset-coral); }
 [data-hue="equity"]    { --card-bg: var(--sf-bay-teal);          --card-fg: var(--sf-on-dark);  --card-accent: var(--sf-imperial-gold); }
 [data-hue="bone"]      { --card-bg: var(--sf-painted-lady-bone); --card-fg: var(--sf-on-light); --card-accent: var(--sf-cable-car-maroon); }
+
+/* big screens: the fluid scale capped too early for 1600px+ displays (cards.css widens the panels) */
+@media (min-width: 1600px) {
+  :root {
+    --step-xl: clamp(2.4rem, 8vw, 4.8rem);
+    --step-l: clamp(1.8rem, 5vw, 3rem);
+    --step-body: 1.45rem;
+    --step-kicker: 1.05rem;
+  }
+}
+@media (min-width: 2200px) {
+  :root { --step-body: 1.7rem; --step-kicker: 1.2rem; }
+}

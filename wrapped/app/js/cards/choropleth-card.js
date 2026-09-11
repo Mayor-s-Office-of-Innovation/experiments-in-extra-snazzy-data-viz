@@ -100,11 +100,13 @@ class ChoroplethCard extends CardBase {
       // Reduced motion skips the wait: drainChoropleth() snaps straight to the drained state.
       if (reduced.matches) {
         document.querySelector('condition-map')?.drainChoropleth();
+        this._panel.classList.add('is-drained');
       } else {
         if (this._items) motion.play('fly-in-stagger', this._panel, { selector: '.beat__items > li', delay: 1150 });
         this._drainTimer = setTimeout(() => {
           this._drainTimer = null;
           document.querySelector('condition-map')?.drainChoropleth();
+          this._panel.classList.add('is-drained');   // the ramp legend fades with the map it explains
         }, 1150);
       }
     }
@@ -113,6 +115,7 @@ class ChoroplethCard extends CardBase {
   onExit() {
     if (this._drain) {
       if (this._drainTimer) { clearTimeout(this._drainTimer); this._drainTimer = null; }
+      this._panel.classList.remove('is-drained');
       document.querySelector('condition-map')?.undrainChoropleth();
     }
     // don't clear underneath an incoming card that styles the map inline itself — the drain

@@ -6,6 +6,11 @@ This projects it to a flat SVG viewBox, simplifies each ring (Douglas-Peucker), 
 wrapped/data/sf_map.json = { viewBox, hoods: {name: {d, cx, cy}} } where d is an SVG path
 and (cx,cy) is the projected centroid the map camera centers on for that hood.
 
+Also (v2 Insight 3 basemap): if wrapped/data/raw/streets.geojson exists (sources/streets.py),
+the street centerlines are projected into the SAME viewBox, simplified, and written as three
+SVG path strings by road class to wrapped/data/sf_streets.json (loaded only by the slide that
+draws streets). If the raw file is absent the committed sf_streets.json is left as-is.
+
 Run: python3 wrapped/build/make_map.py
 """
 import json
@@ -17,9 +22,15 @@ DATA = BUILD.parent / 'data'
 GEOJSON = DATA / 'neighborhoods.geojson'
 CONDITIONS = DATA / 'conditions.json'
 OUT = DATA / 'sf_map.json'
+RAW_STREETS = DATA / 'raw' / 'streets.geojson'
+OUT_STREETS = DATA / 'sf_streets.json'
 
 VIEW_W = 1000.0        # viewBox width; height derived from aspect
 EPSILON = 0.35         # DP simplify tolerance in projected units (higher = fewer points)
+EPSILON_STREETS = 0.6  # streets are texture, not geometry — simplify harder, integer coords
+# DataSF classcode → draw class: 1 freeway, 6 ramp · 2 highway/major, 3 arterial, 4 collector · rest local
+STREET_CLASS = {'1': 'fwy', '6': 'fwy', '2': 'major', '3': 'major', '4': 'major'}
+STREET_LAYERS = {'STREETS', 'FREEWAYS', 'STREETS_TI', 'STREETS_HUNTERSP', 'PARKS', 'PARKS_NPS_PRESIDIO'}
 
 
 def dp(pts, eps):
@@ -144,6 +155,7 @@ def main():
                 'h3': h['h3'], 'x': x, 'y': y,
                 'n_severe': h.get('n_severe', 0),
                 'top_uid_severe': h.get('top_uid_severe', 0),
+                'n': h.get('n', 0), 'n_clean': h.get('n_clean', 0),   # v2 Insight 3 dots
             })
         # Flat-top hexagon radius (center→vertex) so cells tessellate: for a hex grid the
         # centroid spacing of adjacent cells = r·√3, so r = median-nearest-neighbour / √3.
@@ -175,6 +187,43 @@ def main():
     print(f"Wrote {OUT.relative_to(BUILD.parent.parent)} ({OUT.stat().st_size:,} bytes)")
     print(f"  {len(hoods)} hoods · {len(hexes)} hexes (r={hex_r}) · viewBox {out['viewBox']} · "
           f"points {total_pts_in:,} → {total_pts_out:,} ({100*total_pts_out/total_pts_in:.0f}%)")
+
+    # ---- streets (optional input) --------------------------------------------------------
+    if not RAW_STREETS.exists():
+        print(f"  (no {RAW_STREETS.name}: leaving {OUT_STREETS.name} as committed — run sources/streets.py to refresh)")
+        return
+    sj = json.loads(RAW_STREETS.read_text())
+    paths = {'fwy': [], 'major': [], 'local': []}
+    n_in = n_out = kept = 0
+    for f in sj['features']:
+        pr = f['properties']
+        if pr.get('layer') not in STREET_LAYERS or pr.get('active') is False:
+            continue
+        g = f['geometry']
+        lines = [g['coordinates']] if g['type'] == 'LineString' else (g['coordinates'] if g['type'] == 'MultiLineString' else [])
+        cls = STREET_CLASS.get(str(pr.get('classcode')), 'local')
+        for line in lines:
+            proj = [project(lng, lat) for lng, lat in line]
+            n_in += len(proj)
+            simp = dp(proj, EPSILON_STREETS)
+            # integer coords + relative moves: 1 viewBox unit ≈ 14 m, well under a pixel on screen
+            pts = []
+            for x, y in simp:
+                ix, iy = int(round(x)), int(round(y))
+                if not pts or (ix, iy) != pts[-1]:
+                    pts.append((ix, iy))
+            if len(pts) < 2:
+                continue
+            n_out += len(pts)
+            kept += 1
+            d = f"M{pts[0][0]} {pts[0][1]}" + ''.join(f"l{x1 - x0} {y1 - y0}" for (x0, y0), (x1, y1) in zip(pts, pts[1:]))
+            paths[cls].append(d)
+    streets = {'viewBox': out['viewBox'], 'source': 'data.sf.gov/3psu-pn9h (active street centerlines)',
+               'classes': {k: ''.join(v) for k, v in paths.items()}}
+    OUT_STREETS.write_text(json.dumps(streets) + '\n')
+    print(f"Wrote {OUT_STREETS.relative_to(BUILD.parent.parent)} ({OUT_STREETS.stat().st_size:,} bytes)")
+    print(f"  {kept:,} segments · points {n_in:,} → {n_out:,} · "
+          + ' · '.join(f"{k} {len(v):,}" for k, v in paths.items()))
 
 
 if __name__ == '__main__':
