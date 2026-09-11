@@ -47,14 +47,17 @@ export function heightFrac(v, max) {
 
 // Coverage mode (v2 slide 2): heights must do two things at once — the 1-visit stub (51% of
 // hexes, the most common tile) must stand clearly off the ground, AND the visit tiers must
-// separate. A power law can't: the res-9 aggregate spans n=1 → 673 (median 4), and any
-// floor+gamma that lifts the stub flattens everything else into one band (the "still flat"
-// review round). log2 does both: each doubling of visits buys the same visual step, so
-// n=1 → 0.24 · n=4 → 0.35 · n=15 → 0.51 · n=100 → 0.75 · n=673 → 1.0 of the spike.
+// separate. A plain power law can't: the res-9 aggregate spans n=1 → 673 (median 4). log2
+// gives each doubling of visits the same visual step; a GAMMA>1 exponent then pushes the
+// short tiers down (widening the spread) while the tallest stays pinned at 1.0, so with
+// GAMMA=1.5: n=1 → 0.03 · n=4 → 0.12 · n=15 → 0.28 · n=100 → 0.63 · n=673 → 1.0 of the spike.
 export function heightFracCoverage(v, max) {
   if (v <= 0) return 0;
-  const FLOOR = 0.15;
-  return FLOOR + (1 - FLOOR) * (Math.log2(v + 1) / Math.log2(max + 1));
+  // The log term itself sets the low end: at n=1 it's log2(2)/log2(max+1) ≈ 0.11, so a
+  // small FLOOR barely moves the stub. GAMMA (>1) is the real low-end knob — it pushes the
+  // shortest tiles down while keeping the tallest pinned at 1.0, widening the spread.
+  const FLOOR = 0.005, GAMMA = 1.5;
+  return FLOOR + (1 - FLOOR) * Math.pow(Math.log2(v + 1) / Math.log2(max + 1), GAMMA);
 }
 
 // WebGL (lit) — orange ramp, [r,g,b,a] 0–255.
