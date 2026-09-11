@@ -2,9 +2,15 @@
 // by its complaint volume. The flat public *ledger*, counterpart to the Snapshots' 3D hexbin. Uses a
 // perceptual (sqrt) scale because 311 is heavily skewed (Mission ~35k vs a ~2.5k median). Sand→amber
 // sequential ramp, dataviz-validated against the green flood. Drives the shell map (Seam #6).
+//
+// v2 merged card (slides 3+4): `drain: true` adds the "blind spots" beat — after the 167,819
+// count-up settles, the amber flood drains to linework while the limitation bullets fly in.
+// One card, one argument: the flood fills, then goes dark where nobody calls.
 import { CardBase } from './base-card.js';
 import * as data from '../data.js';
 import * as motion from '../motion.js';
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
 // sand → amber (light→dark), validated ordinal on the crowd/green flood
 export const RAMP = ['#f2e6c4', '#e6c179', '#d29a3b', '#b0741d', '#7c4d12'].map((h) =>
@@ -32,6 +38,7 @@ class ChoroplethCard extends CardBase {
     const s = this.spec;
     this.classList.add('beat', 'choropleth-card');
     if (s.align) this.dataset.align = s.align;
+    if (s.drain) this._drain = true;              // v2: merged blind-spots beat (drain on enter)
 
     // per-hood 311 totals → colors (sqrt scale compresses the Mission outlier)
     this._fill = complaintFills();
@@ -57,6 +64,26 @@ class ChoroplethCard extends CardBase {
     legend.append(this.h('span', { class: 'choro-legend__label', text: 'more' }));
     panel.append(legend);
 
+    // limitation bullets (v2 merged card): same markup as the beat card — li grid is
+    // strictly [counter | content] via one wrapping span (strong + span inside it).
+    if (s.items?.length) {
+      const ul = this.h('ul', { class: 'beat__items' });
+      for (const it of s.items) {
+        const li = this.h('li');
+        if (typeof it === 'string') {
+          li.append(this.h('span', { text: it }));
+        } else {
+          const content = this.h('span');
+          if (it.t) content.append(this.h('strong', { text: it.t }));
+          if (it.d) content.append(this.h('span', { text: it.d }));
+          li.append(content);
+        }
+        ul.append(li);
+      }
+      panel.append(ul);
+      this._items = ul;
+    }
+
     this._panel = panel;
     this.append(panel);
   }
@@ -65,9 +92,29 @@ class ChoroplethCard extends CardBase {
     document.querySelector('condition-map')?.setChoropleth(this._fill);
     motion.play('fade-up', this._panel);
     if (this._num) motion.play('count-up', this._num, { to: Number(this._num.dataset.to) });
+    if (this._drain) {
+      // choreography: the flood fills and the count-up lands FIRST, then the map drains to
+      // linework as the limitation bullets fly in — "the map goes dark where nobody calls."
+      // The stagger starts NOW with the full drain delay: fill:'backwards' holds the bullets
+      // at their start keyframe until then (no visible→hidden blink at drain time).
+      // Reduced motion skips the wait: drainChoropleth() snaps straight to the drained state.
+      if (reduced.matches) {
+        document.querySelector('condition-map')?.drainChoropleth();
+      } else {
+        if (this._items) motion.play('fly-in-stagger', this._panel, { selector: '.beat__items > li', delay: 1150 });
+        this._drainTimer = setTimeout(() => {
+          this._drainTimer = null;
+          document.querySelector('condition-map')?.drainChoropleth();
+        }, 1150);
+      }
+    }
   }
 
   onExit() {
+    if (this._drain) {
+      if (this._drainTimer) { clearTimeout(this._drainTimer); this._drainTimer = null; }
+      document.querySelector('condition-map')?.undrainChoropleth();
+    }
     // don't clear underneath an incoming card that styles the map inline itself — the drain
     // beat re-applies + fades these fills, and the bar-pair sets per-hood colors; both enter
     // BEFORE this exit runs, so clearing here would erase their work.

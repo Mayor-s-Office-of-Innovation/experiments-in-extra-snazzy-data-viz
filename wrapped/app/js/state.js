@@ -68,20 +68,28 @@ export class StoryMachine {
 
   _applyMap() {
     if (!this.map) return;
-    const m = this.manifest[this.index].map || {};
+    // NOTE: no `|| {}` here — `map: false` is falsy BY DESIGN and must survive to the check below.
+    const m = this.manifest[this.index].map;
+    // map:false (or style:'none') — the slide has no background visualization worth the
+    // repetition: hide the plane but STILL swing the camera, so it re-enters already settled
+    // (no visible catch-up move) when the next map-bearing slide activates.
+    const spec = m === false ? {} : (m || {});
+    const hideMap = m === false || spec.style === 'none';
+    if (hideMap) this.map.setAttribute('data-hidden', '');
+    else this.map.removeAttribute('data-hidden');
     this.map.apply({
-      hood: m.hood ?? null,
-      hoods: m.hoods ?? null,                              // array form — light several neighborhoods
-      rotate: m.rotate ?? 0,
-      tilt: m.tilt ?? 54,
-      frame: m.frame || 'city',
-      style: m.style || 'outline',
-      zoom: m.zoom,
-      lean: m.lean,
-      leanX: m.leanX,                                     // horizontal-lean override (push map west/east)
-      panY: m.panY ?? 0,                                  // was dropped here — the pin-clearing lift
-      duration: m.duration || 750,                       // snappier; the move is the show
-      easing: m.easing || 'cubic-bezier(.45,0,.15,1)',   // quick out, settled landing
+      hood: spec.hood ?? null,
+      hoods: spec.hoods ?? null,                           // array form — light several neighborhoods
+      rotate: spec.rotate ?? 0,
+      tilt: spec.tilt ?? 54,
+      frame: spec.frame || 'city',
+      style: spec.style || 'outline',
+      zoom: spec.zoom,
+      lean: spec.lean,
+      leanX: spec.leanX,                                  // horizontal-lean override (push map west/east)
+      panY: spec.panY ?? 0,                               // was dropped here — the pin-clearing lift
+      duration: spec.duration || 750,                     // snappier; the move is the show
+      easing: spec.easing || 'cubic-bezier(.45,0,.15,1)', // quick out, settled landing
     });
   }
 
