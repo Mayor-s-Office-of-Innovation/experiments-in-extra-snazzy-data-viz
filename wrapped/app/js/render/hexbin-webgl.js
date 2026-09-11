@@ -8,7 +8,7 @@
 //
 // Interface: mount(container, opts) -> { setObserver, destroy }
 
-import { colorRGBA, heightFrac } from './hexbin-scale.js';
+import { colorRGBA, heightFrac, heightFracCoverage } from './hexbin-scale.js';
 
 // Coverage mode (v2): a clean SAND→GOLD ramp, light throughout. The previous dark-gold start
 // (#5d4713) read "blighted" at the low end, and low columns are everywhere — so the whole ramp
@@ -30,7 +30,10 @@ const CITY = { longitude: -122.4194, latitude: 37.7749 };
 const BUNDLE_URL = '../../vendor/deck-all.mjs';
 const H3_URL = BUNDLE_URL;   // cellToParent ships in the same bundle
 const AGG_RES = 9;          // res-10 → res-9 (~175m cells): visible citywide, finer grain
-const MAX_ELEV_M = 650;     // metres the tallest column rises
+const MAX_ELEV_M = 650;     // metres the tallest severe column rises (v1 hero)
+const MAX_ELEV_COVERAGE_M = 5200;   // coverage mode (v2): ~9.6 m/px at the settled camera
+                                    // (zoom 12.65, pitch ~56°), so the stub needs a tall ceiling
+                                    // — 5200m puts the 0.24 log-floor at ~70px on screen.
 const ease = (t) => 1 - Math.pow(1 - t, 3);
 
 // Warm the module cache during idle so the hero card doesn't pay the bundle cost on first view.
@@ -82,7 +85,7 @@ export async function mount(container, { hexes, outlines = [], camera = {}, mode
   const hexLayer = () => new H3HexagonLayer({
     id: coverage ? 'coverage-hexbin' : 'severe-hexbin', data: cells, getHexagon: (c) => c.h3,
     extruded: true, stroked: false, elevationScale: 1,
-    getElevation: (c) => MAX_ELEV_M * heightFrac(valueOf(c), max),
+    getElevation: (c) => (coverage ? MAX_ELEV_COVERAGE_M : MAX_ELEV_M) * (coverage ? heightFracCoverage(valueOf(c), max) : heightFrac(valueOf(c), max)),
     getFillColor: coverage
       ? (c) => COVERAGE_RGBA(valueOf(c), max)
       : (c) => colorRGBA(c.n_severe, max),

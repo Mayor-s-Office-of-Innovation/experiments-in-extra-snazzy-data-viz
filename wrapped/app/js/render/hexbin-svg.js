@@ -9,7 +9,7 @@
 // Same public interface as the WebGL engine (hexbin-webgl.js) so the card can swap them:
 //   mount(container, opts) -> { setObserver(includeDominant), destroy() }
 
-import { colorForSVG as colorFor, CALM, heightFrac } from './hexbin-scale.js';
+import { colorForSVG as colorFor, CALM, heightFrac, heightFracCoverage } from './hexbin-scale.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const HEX_ANGLES = [0, 60, 120, 180, 240, 300].map((d) => (d * Math.PI) / 180);
@@ -108,7 +108,7 @@ export function mount(container, { hexes, hoods = {}, hexR = 5, viewBox, camera 
     const cols = document.createElementNS(NS, 'g');
     cols.setAttribute('class', 'hexbin-columns');
     for (const { hx, v, base } of rows) {
-      const rise = maxRise * heightFrac(v, max);
+      const rise = maxRise * (coverage ? heightFracCoverage(v, max) : heightFrac(v, max));
       const fp = footprint(hx);
       const cap = fp.map(([x, y]) => [x, y - rise]);
       const fillC = coverage ? coverageColor(Math.pow(v / max, 0.6)) : colorFor(v, max);

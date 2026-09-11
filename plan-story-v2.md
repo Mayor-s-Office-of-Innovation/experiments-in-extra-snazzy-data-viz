@@ -111,6 +111,9 @@ data-backed statements ("A lot of streets are clean"), never exhortations ("Why 
    copy (three questions). Verify v1 still boots untouched.
 2. **Hexbin coverage mode** (slide 1). New `mode:'coverage'` on `hexbin-card` — neutral fill,
    height = visit density (`hexes[].n`), no severe ramp. v1's overview mode untouched.
+   **2026-09-11 post-review revision:** coverage heights got their own scale
+   (`heightFracCoverage` — raised floor 0.08 + gamma 0.55): 51% of hexes have 1 visit, so the
+   shared severe-mode mapping left the low end nearly flat. Severe mode (v1) unchanged.
 3. **Choropleth drain** (slide 3). New map `style:'drain'` (or card-driven `clearChoropleth`
    + dim) on `<condition-map>`; beat card with the 4 limitations.
 4. **Insight 1 bar-pair** (slide 4). Rework `equity-card` (new v2 type `barpair`) — rows:
@@ -128,6 +131,19 @@ data-backed statements ("A lot of streets are clean"), never exhortations ("Why 
    (figure trace ALL PASS; findings 1+2 resolved via per-card provenance footer + anchor doc
    `app2/sources.md`; findings 3–7 open, low). Mobile pass: panels dock bottom <700px, map
    plane lifted, chevron controls centered + disabled at ends.
+
+## Post-review revisions (2026-09-11, coworker feedback)
+
+Deck is **8 slides** now (was 9). Per-card provenance footers renumber automatically
+(`base-card.js` derives `slide-N` from manifest position).
+
+- **Slides 3+4 merged** into one 311 card (`choropleth-card` gained `drain: true` + `items`):
+  amber flood fills + 167,819 counts up → map drains to linework as the limitation bullets
+  fly in (stagger starts immediately, delay 1150ms, `fill:'backwards'` so nothing blinks).
+  `#three11` deep link survives; `#limits` retired.
+- **Plain idle outline map dropped** where it added nothing: `map: false` on insight2 +
+  verdict (state machine hides the plane via `data-hidden`, camera still pre-swings so the
+  map re-enters settled). First + last slides and every map-*effect* slide keep the plane.
 
 ## Verification
 

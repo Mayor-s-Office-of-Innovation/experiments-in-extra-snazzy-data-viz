@@ -40,11 +40,14 @@ const presets = {
   },
 
   // Stagger direct children (chips/pills flying in with a slight overshoot).
-  'fly-in-stagger'(el, { selector = ':scope > *', step = 70 } = {}) {
+  // opts.delay holds each child at its start keyframe until then (fill:'backwards' — holds only
+  // the pre-start window, so an interrupted/cancelled animation still falls back to VISIBLE;
+  // after the animation the resting state is visible either way).
+  'fly-in-stagger'(el, { selector = ':scope > *', step = 70, delay = 0 } = {}) {
     const kids = [...el.querySelectorAll(selector)];
     kids.forEach((k, i) => k.animate(
       [{ opacity: 0, transform: 'translateY(28px) scale(.96)' }, { opacity: 1, transform: 'none' }],
-      { duration: dur(), delay: i * step, easing: easeBack(), fill: 'none' }
+      { duration: dur(), delay: delay + i * step, easing: easeBack(), fill: delay ? 'backwards' : 'none' }
     ));
     return null;
   },

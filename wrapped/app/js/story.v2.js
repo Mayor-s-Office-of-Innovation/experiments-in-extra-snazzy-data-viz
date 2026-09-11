@@ -2,6 +2,9 @@
 // Mirrors updated-story.md + plan-story-v2.md, with OUR validated numbers (locked window
 // 2026-01-30 → 2026-06-08). Title rule: findings, not campaigning.
 //
+// 2026-09-11 post-review revisions: slides 3+4 merged into one 311 card (flood → drain → limits);
+// `map: false` drops the plain idle outline map where it adds nothing (deck: 9 → 8 slides).
+//
 // Types not yet built (barpair/denominator/paleout/applications) ride `beat` placeholders until
 // their phase lands — same walkable-placeholder approach v1 used.
 
@@ -29,21 +32,16 @@ export const story = [
     map: { rotate: 10, tilt: 56 },
   },
 
-  // ---- 311 ----
+  // ---- 311 (merged slide: the flood + what it can't do — drain + limits in one beat) ----
   {
-    id: 'three11', type: 'choropleth', hue: 'crowd', align: 'end',
-    kicker: '311',
+    id: 'three11', type: 'choropleth', hue: 'crowd', align: 'end', drain: true,
+    kicker: '311', title: 'What 311 can’t do',
     stat: { label: 'complaints filed by the public' },
-    map: { rotate: -12, tilt: 50, style: 'choropleth' },
-  },
-  {
-    id: 'limits', type: 'beat', hue: 'crowd', align: 'end', drain: true,
-    kicker: 'The blind spots', title: 'What 311 can’t do',
     items: [
       { t: 'No denominator.', d: '50 cases may mean a bad block — or a well-documented one.' },
       { t: 'It can’t record a clean street.', d: 'Silence isn’t evidence.' },
     ],
-    map: { rotate: -6, tilt: 52, style: 'outline' },
+    map: { rotate: -12, tilt: 50, style: 'choropleth' },
   },
 
   // ---- Insights ----
@@ -54,12 +52,11 @@ export const story = [
     map: { rotate: 6, tilt: 48, style: 'filled', hoods: ['Bayview Hunters Point', 'Mission'], leanX: 10, panY: -20 },
   },
   {
-    id: 'insight2', type: 'denominator', hue: 'algorithm', align: 'end',
+    id: 'insight2', type: 'denominator', hue: 'algorithm', align: 'end', map: false,
     kicker: 'Insight 2', title: 'A denominator changes the picture',
     leftLabel: '8 visits — 4 found waste: the rate is 50%',
     rightLabel: '311 can’t — no denominator',
     body: '311 counts complaints. The app counts what staff saw on each visit — so a block gets a rate, not just a tally.',
-    map: { rotate: -8, tilt: 50, style: 'outline' },
   },
   {
     id: 'insight3', type: 'paleout', hue: 'camera', align: 'end',
@@ -75,14 +72,13 @@ export const story = [
 
   // ---- Close ----
   {
-    id: 'verdict', type: 'beat', hue: 'ink', align: 'end',
+    id: 'verdict', type: 'beat', hue: 'ink', align: 'end', map: false,
     kicker: 'The verdict', title: 'The three questions, answered',
     items: [
-      { t: 'Can we produce a valid baseline over time and across space?', d: 'Yes — highly-variable blocks need special strategies, and coverage scales with deployment.' },
+      { t: 'Can we produce a valid baseline over time and across space?', d: 'Yes, and coverage scales with deployment.' },
       { t: 'Does the app data tell us anything 311 can’t?', d: 'Yes — underserved neighborhoods, rates not just counts, and proof that streets are clean.' },
       { t: 'Can these data inform policy and operations?', d: 'Yes.' },
     ],
-    map: { rotate: -4, tilt: 50, style: 'outline' },
   },
   {
     id: 'applications', type: 'beat', hue: 'ink', align: 'end',

@@ -8,6 +8,11 @@ deck ships) before findings were written.
 93/85 severe · 7,331/34,714 (4.7×) · 43% clean (2,617/6,094) · 4-of-8 example hex — every displayed
 number matches the bake exactly. No card displays a number that differs between slides.
 
+**2026-09-11 renumbering:** slides 3+4 merged into one 311 card and the plain background map
+dropped on two slides — the deck is 8 slides now. Slide references below reflect the
+**pre-merge** deck; open findings 3–7 map to slides 3/4/4/5/2 of the new deck respectively
+(denominator example → 5, bar labels → 4, blocks chip → 2). All figures unchanged.
+
 ## Ranked findings
 
 | # | finding | dimension | severity | status |

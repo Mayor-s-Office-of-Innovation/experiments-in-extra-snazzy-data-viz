@@ -45,6 +45,18 @@ export function heightFrac(v, max) {
   return v <= 0 ? 0 : Math.pow(v / max, 0.75);   // slightly compress the tall end
 }
 
+// Coverage mode (v2 slide 2): heights must do two things at once — the 1-visit stub (51% of
+// hexes, the most common tile) must stand clearly off the ground, AND the visit tiers must
+// separate. A power law can't: the res-9 aggregate spans n=1 → 673 (median 4), and any
+// floor+gamma that lifts the stub flattens everything else into one band (the "still flat"
+// review round). log2 does both: each doubling of visits buys the same visual step, so
+// n=1 → 0.24 · n=4 → 0.35 · n=15 → 0.51 · n=100 → 0.75 · n=673 → 1.0 of the spike.
+export function heightFracCoverage(v, max) {
+  if (v <= 0) return 0;
+  const FLOOR = 0.15;
+  return FLOOR + (1 - FLOOR) * (Math.log2(v + 1) / Math.log2(max + 1));
+}
+
 // WebGL (lit) — orange ramp, [r,g,b,a] 0–255.
 export function colorRGBA(v, max, alpha = 235) {
   if (v <= 0) { const [r, g, b] = hex2rgb(CALM); return [r, g, b, 90]; }
