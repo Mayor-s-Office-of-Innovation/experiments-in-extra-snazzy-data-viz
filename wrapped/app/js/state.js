@@ -21,6 +21,7 @@ export class StoryMachine {
     this._wireControls();
     this._wireKeys();
     this._wireStageAdvance();
+    this._wireHash();
 
     const start = this._indexFromHash();
     this.go(start >= 0 ? start : 0, { announce: false });
@@ -88,6 +89,7 @@ export class StoryMachine {
       lean: spec.lean,
       leanX: spec.leanX,                                  // horizontal-lean override (push map west/east)
       panY: spec.panY ?? 0,                               // was dropped here — the pin-clearing lift
+      settle: spec.settle ?? 0,                           // ms until the idle drift/rock pauses (0 = never)
       duration: spec.duration || 750,                     // snappier; the move is the show
       easing: spec.easing || 'cubic-bezier(.45,0,.15,1)', // quick out, settled landing
     });
@@ -142,6 +144,15 @@ export class StoryMachine {
     this.controls.prev.addEventListener('click', () => this.prev());
     this.controls.next.addEventListener('click', () => this.next());
     this.controls.autoplay.addEventListener('click', () => this.setAutoplay(!this.autoplay));
+  }
+
+  // In-page links (#insight1 …) navigate. go() writes the hash with replaceState, which fires no
+  // hashchange, so this only reacts to real link clicks / manual edits.
+  _wireHash() {
+    addEventListener('hashchange', () => {
+      const i = this._indexFromHash();
+      if (i >= 0 && i !== this.index) this.go(i);
+    });
   }
 
   _wireKeys() {

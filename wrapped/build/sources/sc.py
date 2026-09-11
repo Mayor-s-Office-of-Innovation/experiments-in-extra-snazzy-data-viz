@@ -182,7 +182,7 @@ def main():
     # (the honest condition signal). Mean score is near-useless for coloring — 71%
     # of photos are pristine 100s, so it washes out to uniform green.
     # by_uid[uid] = [n, sum_score, severe]
-    hex_agg = defaultdict(lambda: {'n': 0, 'sev': 0, 'sum_score': 0.0, 'lat': 0.0, 'lng': 0.0,
+    hex_agg = defaultdict(lambda: {'n': 0, 'sev': 0, 'clean': 0, 'sum_score': 0.0, 'lat': 0.0, 'lng': 0.0,
                                    'by_uid': defaultdict(lambda: [0, 0.0, 0])})
     for o in clean:
         if not o['h3']:
@@ -191,6 +191,7 @@ def main():
         h['n'] += 1
         is_sev = 1 if severe(o) else 0
         h['sev'] += is_sev
+        h['clean'] += 0 if signal(o) else 1     # 'nothing wrong at all' (v2 Insight 3 dots)
         h['sum_score'] += o['score']
         h['lat'] += o['lat']
         h['lng'] += o['lng']
@@ -202,7 +203,7 @@ def main():
     for h3, h in hex_agg.items():
         top_uid, (tn, tss, tsev) = max(h['by_uid'].items(), key=lambda kv: kv[1][0])
         hexes.append({
-            'h3': h3, 'n': h['n'], 'n_severe': h['sev'],
+            'h3': h3, 'n': h['n'], 'n_severe': h['sev'], 'n_clean': h['clean'],
             'mean_score': round(h['sum_score'] / h['n'], 1),
             'lat': round(h['lat'] / h['n'], 6), 'lng': round(h['lng'] / h['n'], 6),
             'top_uid': top_uid, 'top_uid_n': tn, 'top_uid_severe': tsev,

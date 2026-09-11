@@ -5,8 +5,8 @@
 // 2026-09-11 post-review revisions: slides 3+4 merged into one 311 card (flood → drain → limits);
 // `map: false` drops the plain idle outline map where it adds nothing (deck: 9 → 8 slides).
 //
-// Types not yet built (barpair/denominator/paleout/applications) ride `beat` placeholders until
-// their phase lands — same walkable-placeholder approach v1 used.
+// 2026-09-11 rebuild: Insight 2 is the one-block timeline (type `timeline`, block_exhibit in the
+// bake); Insight 3 draws real streets + one dot per photo (paleout-card, sf_streets.json).
 
 export const story = [
   {
@@ -18,7 +18,7 @@ export const story = [
       'Does the app data tell us anything 311 can’t?',
       'Can these data inform policy and operations?',
     ],
-    map: { rotate: -8, tilt: 50, style: 'outline' },
+    map: { rotate: -8, tilt: 50, style: 'outline', settle: 4000 },   // comes to rest after 4s
   },
 
   // ---- The Street Conditions App (coverage hero) ----
@@ -49,46 +49,69 @@ export const story = [
     id: 'insight1', type: 'barpair', hue: 'equity', align: 'end',
     kicker: 'Insight 1', title: 'Complaint volume doesn’t track conditions',
     body: 'A budget that follows complaint volume follows civic voice, not street condition.',
-    map: { rotate: 6, tilt: 48, style: 'filled', hoods: ['Bayview Hunters Point', 'Mission'], leanX: 10, panY: -20 },
+    map: { rotate: 6, tilt: 48, style: 'filled', hoods: ['Bayview Hunters Point', 'Mission'], leanX: -6, panY: -20 },
   },
   {
-    id: 'insight2', type: 'denominator', hue: 'algorithm', align: 'end', map: false,
-    kicker: 'Insight 2', title: 'A denominator changes the picture',
-    leftLabel: '8 visits — 4 found waste: the rate is 50%',
-    rightLabel: '311 can’t — no denominator',
-    body: '311 counts complaints. The app counts what staff saw on each visit — so a block gets a rate, not just a tally.',
+    id: 'insight2', type: 'timeline', hue: 'algorithm', align: 'end',
+    kicker: 'Insight 2 \u00b7 one block, 19 weeks', title: 'A denominator changes the picture',
+    body: '311 counts what went wrong here: 120 complaints. It can\u2019t count the days nothing did. Staff visited on 15 days and found nothing wrong on 12 of them.',
+    foot: 'Same block, same 19 weeks, two real records. Only one of them has a denominator.',
+    map: { rotate: -6, tilt: 50, style: 'outline', hood: 'Tenderloin', lean: 0.25, panY: -12 },
   },
   {
     id: 'insight3', type: 'paleout', hue: 'camera', align: 'end',
     kicker: 'Insight 3', title: 'A lot of streets are clean',
-    legend: 'Each green hex = a block where staff photographed and found nothing wrong. Dark hexes had issues flagged.',
     items: [
-      { t: '311 can never give this level of insight.', d: 'A block with no complaints is indistinguishable from a block nobody called about.' },
-      { t: 'Documenting conditions can establish a street is clean', d: 'in a way that documenting problems cannot.' },
-      { t: 'City teams deserve credit', d: 'where credit is due — and media narratives shouldn’t be steered only by what’s wrong.' },
+      { t: '311 can never show this.', d: 'A block with no complaints is indistinguishable from a block nobody called about.' },
+      { t: 'City teams deserve credit', d: 'where credit is due \u2014 and narratives shouldn\u2019t be steered only by what\u2019s wrong.' },
     ],
-    map: { rotate: 0, tilt: 54, style: 'outline', panY: -14 },
+    map: { rotate: 10, tilt: 56, style: 'outline', panY: -14 },
   },
 
-  // ---- Close ----
+  // ---- Close: the agreed doc's §7 / §8 / §9 (updated-story.md), wording verbatim. The one
+  // deviation, by decision 2026-09-11: §7 keeps our toned-down title (findings, not campaigning).
+  // Kickers are neutral labels, not doc wording. Nothing else on these slides is ours.
   {
-    id: 'verdict', type: 'beat', hue: 'ink', align: 'end', map: false,
+    id: 'verdict', type: 'close', hue: 'ink', align: 'end', map: false, wide: true,
     kicker: 'The verdict', title: 'The three questions, answered',
     items: [
-      { t: 'Can we produce a valid baseline over time and across space?', d: 'Yes, and coverage scales with deployment.' },
-      { t: 'Does the app data tell us anything 311 can’t?', d: 'Yes — underserved neighborhoods, rates not just counts, and proof that streets are clean.' },
-      { t: 'Can these data inform policy and operations?', d: 'Yes.' },
+      { t: 'Can we generate valid baseline and overtime estimates of street conditions that are comparable across time and space?',
+        sub: [
+          { t: 'Baseline data: Yes!', d: 'Caveats: highly variable blocks might need special data collection strategies', },
+          { t: 'Over time data: Yes!', d: 'Caveats: coverage depends on how large-scale we\u2019re deploying the app' },
+        ] },
+      { t: 'Does the Street Conditions App data tell us anything new compared to 311?',
+        sub: [
+          { t: 'There are neighborhoods that are currently being underserved', },
+          { t: 'Adds a denominator that\u2019s a closer proxy for real conditions.', d: 'Rates, not just counts', },
+          { t: 'Proves streets are clean,', d: 'something no complaint system can do', },
+        ] },
+      { t: 'Can these data inform policy and operational decisions?', d: 'Yes, see next slide' },
     ],
   },
   {
-    id: 'applications', type: 'beat', hue: 'ink', align: 'end',
-    kicker: 'If we scale it', title: 'Potential applications',
+    id: 'policy', type: 'close', hue: 'camera', align: 'end', bg: 'dots',
+    kicker: 'Policy and operations', title: 'This data can inform policy and operational decisions',
+    body: 'SCA data can tell us:',
     items: [
-      { t: 'Reveal hidden inequities', d: 'where 311 understates real need.' },
-      { t: 'Establish ambient baselines', d: 'for strategic resource allocation.' },
-      { t: 'Surface long-range trends', d: 'to measure whether interventions work.' },
-      { t: 'For DPH/RRT, DPW, infrastructure agencies, fire risk, enforcement, and the Controller’s Office', d: ' — continuous insight where only snapshots exist today.' },
+      { t: 'Reveal hidden inequities:', d: 'spot areas where 311 reports understate real need, making the case for renewed investment.' },
+      { t: 'Establish ambient baselines:', d: 'build the evidence base for strategic resource allocation and public-facing investment cases.' },
+      { t: 'Surface long-range trends:', d: 'track outcomes over time to evaluate past decisions and measure whether interventions actually work.' },
     ],
-    map: { rotate: 0, tilt: 46, style: 'outline' },
+    map: { rotate: 10, tilt: 56, style: 'outline', panY: -14 },
+  },
+  {
+    id: 'applications', type: 'close', hue: 'ink', align: 'end', wide: true,
+    kicker: 'Applications', title: 'What are possible applications of this data?',
+    tiles: [
+      { t: 'Give DPH/RRT teams better baselines and trends', d: 'more confident strategic deployments \u2014 based on real conditions, not ticket counts; get credit for real improvements (maintain morale, avoid wasted resources) even when 311 counts remain high; target where real problems are hidden by 311 undercounts' },
+      { t: 'Free DPW from the 311 trap', d: 'help shift from reactive ticket-chasing to strategic, data-driven corridor cleaning.' },
+      { t: 'Give infrastructure-owning agencies a view of trends', d: 'track conditions of city-owned assets over time, to guide maintenance and renewal.' },
+      { t: 'Reduce fire risk', d: 'flag vegetation health and fire risk trends before they become emergencies.' },
+      { t: 'Point enforcement where it matters', d: 'surface hotspots for blocked bike lanes, illegal parking, and bus stop obstructions.' },
+      { t: 'Replace infrequent controller\u2019s office snapshots with continuous insight', d: 'provide real-time data to prioritize street and sidewalk improvements.' },
+    ],
+    caveat: 'Jan 30 \u2013 Jun 8, 2026 \u00b7 AI-scored, not human judgment \u00b7 coverage \u2260 conditions',
+    map: { rotate: 0, tilt: 46, style: 'outline', zoom: 0.88 },
   },
 ];

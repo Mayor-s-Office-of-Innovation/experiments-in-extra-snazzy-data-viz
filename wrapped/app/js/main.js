@@ -18,7 +18,8 @@ import './cards/equity-card.js';
 import './cards/pickneighborhood-card.js';
 import './cards/caveats-card.js';
 import './cards/barpair-card.js';
-import './cards/denominator-card.js';
+import './cards/timeline-card.js';
+import './cards/close-card.js';
 import './cards/paleout-card.js';
 
 // manifest `type` -> custom element tag
@@ -33,7 +34,8 @@ const CARD_TAGS = {
   pickhood: 'card-pickneighborhood',
   caveats: 'card-caveats',
   barpair: 'card-barpair',
-  denominator: 'card-denominator',
+  timeline: 'card-timeline',
+  close: 'card-close',
   paleout: 'card-paleout',
 };
 

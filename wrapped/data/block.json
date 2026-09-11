@@ -1,0 +1,752 @@
+{
+ "schema_version": 1,
+ "h3": "8a28308280e7fff",
+ "label": "Van Ness Ave & Market St",
+ "hood": "Tenderloin",
+ "lat": 37.775526,
+ "lng": -122.418892,
+ "boundary": [
+  [
+   37.77485562832884,
+   -122.418684715606
+  ],
+  [
+   37.775361838385955,
+   -122.4180456394552
+  ],
+  [
+   37.77603209629467,
+   -122.41825248012377
+  ],
+  [
+   37.776196140349704,
+   -122.41909840385036
+  ],
+  [
+   37.77568992790474,
+   -122.41973747564904
+  ],
+  [
+   37.77501967379262,
+   -122.41953062807342
+  ]
+ ],
+ "window": {
+  "start": "2026-01-30",
+  "end": "2026-06-08"
+ },
+ "pulled_at": "2026-09-11",
+ "note": "Staff visits grouped by San Francisco calendar day; lv = worst rating that day (0 nothing wrong, 1 something rated 1, 2 something rated >= 2), Active Drug Use excluded as everywhere in the deck. 311 = comparable service_names filed inside the hex polygon, admin-churn details excluded (same rules as sf311.py).",
+ "visits": [
+  {
+   "d": "2026-03-25",
+   "n": 1,
+   "lv": 1
+  },
+  {
+   "d": "2026-03-26",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-03-27",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-03-30",
+   "n": 2,
+   "lv": 1
+  },
+  {
+   "d": "2026-03-31",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-02",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-06",
+   "n": 2,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-07",
+   "n": 2,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-09",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-22",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-23",
+   "n": 11,
+   "lv": 1
+  },
+  {
+   "d": "2026-04-28",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-04-30",
+   "n": 1,
+   "lv": 0
+  },
+  {
+   "d": "2026-05-05",
+   "n": 2,
+   "lv": 0
+  },
+  {
+   "d": "2026-05-19",
+   "n": 1,
+   "lv": 0
+  }
+ ],
+ "cases": [
+  {
+   "d": "2026-01-30",
+   "label": "signal_box",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-01-30",
+   "label": "building_other",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-01-31",
+   "label": "transit_shelter_platform",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-01-31",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-01-31",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-01",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-01",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-02",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-03",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-03",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-02-03",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-02-05",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-06",
+   "label": "other",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-08",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-13",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-13",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-14",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-15",
+   "label": "furniture",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-15",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-02-18",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-19",
+   "label": "needles_less_than_20",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-19",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-19",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-02-20",
+   "label": "shopping_cart",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-20",
+   "label": "shopping_cart",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-21",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-21",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-21",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-23",
+   "label": "signal_box",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-23",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-25",
+   "label": "other",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-26",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-02-26",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-02-26",
+   "label": "shopping_cart",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-26",
+   "label": "spin_standing_scooter",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-02-26",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-27",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-02-28",
+   "label": "affixed_improperly",
+   "service_name": "Illegal Postings"
+  },
+  {
+   "d": "2026-02-28",
+   "label": "sidewalk_in_front_of_property",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-02-28",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-02",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-02",
+   "label": "spin_standing_scooter",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-03",
+   "label": "spin_standing_scooter",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-03",
+   "label": "lime_standing_scooter",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-03",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-04",
+   "label": "sidewalk_structure",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-03-07",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-09",
+   "label": "other_scooter_bike",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-13",
+   "label": "scooter_without_license_plate",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-13",
+   "label": "display_merchandise",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-13",
+   "label": "display_merchandise",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-03-14",
+   "label": "needles_less_than_20",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-14",
+   "label": "needles_less_than_20",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-16",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-16",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-16",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-03-18",
+   "label": "signal_box",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-03-18",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-19",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-20",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-03-23",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-23",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-24",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-03-24",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-24",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-24",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-03-26",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-03-30",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-01",
+   "label": "pavement_defect",
+   "service_name": "Sidewalk and Curb"
+  },
+  {
+   "d": "2026-04-03",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-04-03",
+   "label": "electronics",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-04",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-04",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-04",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-11",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-11",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-04-12",
+   "label": "transit_shelter_platform",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-13",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-16",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-16",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-04-16",
+   "label": "city_garbage_can_overflowing",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-17",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-17",
+   "label": "other",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-04-19",
+   "label": "other_bagged_boxed_contained_garbage",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-19",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-21",
+   "label": "other_loose_garbage_debris_yard_waste",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-04-24",
+   "label": "building_other",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-04-26",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-05-01",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-05-01",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-05-01",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-05-05",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-05",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-07",
+   "label": "needles_less_than_20",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-09",
+   "label": "fire_hydrant",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-05-10",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-05-11",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-05-11",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-12",
+   "label": "pavement_defect",
+   "service_name": "Sidewalk and Curb"
+  },
+  {
+   "d": "2026-05-13",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-13",
+   "label": "building_commercial",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-05-13",
+   "label": "sidewalk_in_front_of_property",
+   "service_name": "Graffiti Private"
+  },
+  {
+   "d": "2026-05-16",
+   "label": "other",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-05-17",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-20",
+   "label": "lime_standing_scooter",
+   "service_name": "Blocked Street and Sidewalk"
+  },
+  {
+   "d": "2026-05-23",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-24",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-24",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-24",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-25",
+   "label": "encampment",
+   "service_name": "Encampment"
+  },
+  {
+   "d": "2026-05-25",
+   "label": "glass",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-29",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-05-30",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-06-01",
+   "label": "collapsed_sidewalk",
+   "service_name": "Sidewalk and Curb"
+  },
+  {
+   "d": "2026-06-01",
+   "label": "pole",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-06-01",
+   "label": "fire_hydrant",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-06-03",
+   "label": "street",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-06-03",
+   "label": "city_garbage_can_overflowing",
+   "service_name": "Street and Sidewalk Cleaning"
+  },
+  {
+   "d": "2026-06-04",
+   "label": "transit_shelter_platform",
+   "service_name": "Graffiti Public"
+  },
+  {
+   "d": "2026-06-05",
+   "label": "human_waste_or_urine",
+   "service_name": "Street and Sidewalk Cleaning"
+  }
+ ],
+ "summary": {
+  "photos": 29,
+  "visit_days": 15,
+  "observers": 4,
+  "clean_days": 12,
+  "issue_days": 3,
+  "severe_days": 0,
+  "cases": 120,
+  "case_days": 67,
+  "top_labels": [
+   {
+    "label": "human_waste_or_urine",
+    "count": 25
+   },
+   {
+    "label": "other_loose_garbage_debris_yard_waste",
+    "count": 13
+   },
+   {
+    "label": "transit_shelter_platform",
+    "count": 11
+   },
+   {
+    "label": "other_bagged_boxed_contained_garbage",
+    "count": 11
+   },
+   {
+    "label": "encampment",
+    "count": 10
+   }
+  ]
+ },
+ "query_url": "https://data.sf.gov/resource/vw6y-z8j6.json?%24where=requested_datetime+%3E%3D+%272026-01-30T00%3A00%3A00%27+AND+requested_datetime+%3C+%272026-06-09T00%3A00%3A00%27+AND+service_name+IN+%28%27Street+and+Sidewalk+Cleaning%27%2C+%27Graffiti+Public%27%2C+%27Graffiti+Private%27%2C+%27Encampment%27%2C+%27Blocked+Street+and+Sidewalk%27%2C+%27Sidewalk+and+Curb%27%2C+%27Litter+Receptacle+Maintenance%27%2C+%27Illegal+Postings%27%29+AND+within_polygon%28point%2C+%27MULTIPOLYGON+%28%28%28-122.418685+37.774856%2C+-122.418046+37.775362%2C+-122.418252+37.776032%2C+-122.419098+37.776196%2C+-122.419737+37.775690%2C+-122.419531+37.775020%2C+-122.418685+37.774856%29%29%29%27%29&%24order=requested_datetime+DESC&%24limit=1000"
+}

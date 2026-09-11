@@ -10,8 +10,11 @@ pipeline in this repository. Nothing is illustrative or invented.
 1. **Street Conditions App pilot** (staff photos, AI-scored) — raw export
    `wrapped/data/raw/sc_export.csv`, 6,136 rows. Scrubbed to 6,094 usable observations
    (dropped out-of-SF coordinates and default-centroid rows). Ingest: `build/sources/sc.py`.
-2. **SF 311 complaints** — [SF 311 service requests, dataset `vw6y-z8j6`](https://data.sfgov.org/City-Infrastructure/Case-Data-from-SF-311-vw6y-z8j6/kpgh-cg3z)
-   on data.sfgov.org, aggregated at (neighborhood, category) grain, clamped to the window.
+   The committed export carries no submitter names or emails (those columns were removed
+   2026-09-11; the pipeline never read them — observers are the opaque `user_id`, anonymized
+   to u0…uN at ingest).
+2. **SF 311 complaints** — [SF 311 service requests, dataset `vw6y-z8j6`](https://data.sf.gov/City-Infrastructure/Case-Data-from-SF-311-vw6y-z8j6/kpgh-cg3z)
+   on data.sf.gov (formerly data.sfgov.org), aggregated at (neighborhood, category) grain, clamped to the window.
    Pull: `build/sources/sf311.py`. Categories limited to those with a
    [validated crosswalk](crosswalk_review.md) to the app's 12 scoring categories.
 
@@ -40,20 +43,40 @@ pipeline in this repository. Nothing is illustrative or invented.
 - **7,331 / 34,714 complaints** — 311 totals; Mission files **4.7×** Bayview's.
 
 ### Slide 5 — A denominator changes the picture <a id="slide-5-a-denominator-changes-the-picture"></a><a id="slide-5"></a>
-- **One block, 8 visits, 4 found waste = 50%** — real hex `8a28308284affff` from the bake
-  (8 observations, 4 with a severe rating). Selectable from the raw export by hex id.
-- **34,714** — Mission's 311 total (same window).
+One real block, both records, one time axis. Block = H3 res-10 hex `8a28308280e7fff`
+(Van Ness Ave & Market St, Tenderloin), chosen from the blocks with 10+ visit-days by
+**multiple** observers (no single-observer story). Built by `build/sources/block.py`
+(`data/block.json`, folded into the bake as `block_exhibit`).
+- **120 complaints on 67 days** — comparable 311 service requests whose point falls inside the
+  hex polygon, Jan 30 – Jun 8, same service-name whitelist and admin-churn exclusions as the
+  citywide pull; pulled 2026-09-11 from data.sf.gov (the live query is `query_url` in
+  `block.json`). One dot per case, stacked per day.
+- **15 visit-days, 12 with nothing wrong** — staff photos in the hex (29 photos by 4 observers),
+  grouped by San Francisco calendar day; a day's mark is its worst rating: green = no category
+  rated ≥ 1, amber = something rated 1, red = something rated ≥ 2 (Active Drug Use excluded, as
+  everywhere in the deck).
+- Alternates considered: 418 Larkin (20 visit-days, 9 clean, but 33 of 35 photos by one
+  observer) and 555 Larkin (39 visit-days, 143 of 154 by one observer).
 
 ### Slide 6 — A lot of streets are clean <a id="slide-6-a-lot-of-streets-are-clean"></a><a id="slide-6"></a>
 - **43%** — `1 − obs_with_signal / obs` citywide = 2,617 of 6,094 photos with nothing wrong.
-- **Green hexes** — hexes with zero severe observations (1,935 of 2,238).
+- **One dot per photo** — 6,094 dots scattered inside the hex each photo was taken in (positions
+  are a seeded scatter, not GPS points; the hex is real). The 2,617 green dots are the same
+  photos as the 43% (`n_clean` per hex from `sc.py`); grey dots had something rated ≥ 1.
+  (Two photos carry no hex id and are counted but not drawn.)
+- **Streets** — DataSF street centerlines (dataset `3psu-pn9h`, active segments), projected and
+  simplified by `make_map.py` into `data/sf_streets.json`. Basemap only; no figures.
 
 ### Slide 7 — The three questions, answered <a id="slide-7-the-three-questions-answered"></a><a id="slide-7"></a>
-- Derived from the findings on slides 4–6; caveats from the pipeline's known limits
-  (observer coverage, deployment scale).
+- Wording is the team's agreed §7 (`updated-story.md`) verbatim, under our toned-down title.
+  No figures on this slide; the answers are argued by slides 2–6.
 
-### Slide 8 — Potential applications <a id="slide-8-potential-applications"></a><a id="slide-8"></a>
-- No figures; operational implications drawn from the above.
+### Slide 8 — This data can inform policy and operational decisions <a id="slide-8-this-data-can-inform-policy-and-operational-decisions"></a><a id="slide-8"></a>
+- The team's agreed §8, verbatim. No figures. Background: slide 6's streets + photo dots.
+
+### Slide 9 — What are possible applications of this data? <a id="slide-9-what-are-possible-applications-of-this-data"></a><a id="slide-9"></a>
+- The team's agreed §9, verbatim, as six tiles. No figures. The caveat strip restates the
+  deck's guardrails: locked window, AI-scored not human judgment, coverage ≠ conditions.
 
 ## Honesty notes
 - The app's 0–100 score is a flat, unweighted AI rubric (graffiti = human waste, point for

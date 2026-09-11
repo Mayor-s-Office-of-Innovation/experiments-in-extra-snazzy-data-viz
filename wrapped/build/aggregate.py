@@ -25,6 +25,7 @@ SC = DATA / 'sc.json'
 SF311 = DATA / 'sf311.json'
 CROSSWALK = DATA / 'crosswalk.json'
 GEOJSON = DATA / 'neighborhoods.geojson'
+BLOCK = DATA / 'block.json'          # optional one-block exhibit (sources/block.py, v2 Insight 2)
 OUT = DATA / 'conditions.json'
 
 
@@ -87,6 +88,8 @@ def main():
             'crowd_only': crowd_only, 'neither': neither,
         },
         'hexes': sc['hexes'],                        # hero Camera map (color by n_severe, size by n)
+        # v2 Insight 2: one block's visits + 311 cases on a shared time axis (None if not built)
+        'block_exhibit': json.loads(BLOCK.read_text()) if BLOCK.exists() else None,
         'tenderloin_exhibit': sc['tenderloin_exhibit'],
         'neighborhoods': neighborhoods,
     }

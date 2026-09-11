@@ -39,6 +39,17 @@ export async function loadIncome(url = '../data/income.json') {
 }
 export const income = (name) => _income?.neighborhoods?.[name]?.median_income ?? null;
 
+// Street centerlines (projected SVG paths by road class) — only the "streets are clean" slide
+// draws them, so they load lazily and separately from sf_map.json.
+let _streets = null;
+export async function loadStreets(url = '../data/sf_streets.json') {
+  if (_streets) return _streets;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`sf_streets.json ${res.status}`);
+  _streets = await res.json();
+  return _streets;
+}
+
 export const mapHexes = () => _map?.hexes || [];
 export const mapHoods = () => _map?.hoods || {};
 export const mapOutlines = () => _map?.outlines || [];   // lng/lat rings for the WebGL PathLayer
@@ -57,6 +68,7 @@ export const coverage = () => db().coverage_alignment;
 export const crosswalk = () => db().crosswalk;
 export const hexes = () => db().hexes;
 export const tenderloinExhibit = () => db().tenderloin_exhibit;
+export const block = () => db().block_exhibit || null;   // v2 Insight 2: one block, both records
 
 export const hood = (name) => db().neighborhoods[name] || null;
 export const hoods = () => db().neighborhoods;

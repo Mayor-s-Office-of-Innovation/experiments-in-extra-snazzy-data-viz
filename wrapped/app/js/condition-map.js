@@ -56,9 +56,19 @@ class ConditionMap extends HTMLElement {
   // (our signature — not 311wrapped's zoom-into-a-polygon). 'hood' allows a rare dramatic
   // close-up (e.g., the Tenderloin exhibit).
   apply({ hood = null, hoods = null, rotate = 0, tilt = 55, zoom = null, frame = 'city', lean = 0.4,
-          panY = 0, style = 'outline', hue = null, leanX = null,
+          panY = 0, style = 'outline', hue = null, leanX = null, settle = 0,
           duration = 900, easing = 'cubic-bezier(.5,0,.2,1)' } = {}) {
     if (!this._ready) return;
+    // settle: ms after which the idle motion (drift + rock) PAUSES in place — for slides that
+    // should come to rest (e.g. the opening questions). Any later apply() resumes it.
+    clearTimeout(this._settleTimer);
+    this._drift.classList.remove('is-paused');
+    if (settle > 0) {
+      this._settleTimer = setTimeout(() => {
+        this._drift.classList.add('is-paused');
+        this._rock?.pause();
+      }, settle);
+    }
     // `hoods` (array) lights several neighborhoods; `hood` (string) is the legacy single form.
     const list = hoods || (hood ? [hood] : []);
     // lean toward the centroid of the active hoods (or stay put)
@@ -195,117 +205,87 @@ class ConditionMap extends HTMLElement {
   // centroid of a hood in viewBox units (for cards that place their own markers)
   centroid(hood) { const h = this._map?.hoods[hood]; return h ? { x: h.cx, y: h.cy } : null; }
 
-  // ---- v2 pale-out stipple: one layer above the hoods; dots carry data-calm → CSS pales them ----
-  setStipple(points = []) {
-    if (!this._stipple) {
-      this._stipple = document.createElementNS(SVGNS, 'g');
-      this._stipple.setAttribute('class', 'map-stipple');
-      this._svg.insertBefore(this._stipple, this._dots);   // above hoods, below pin
+  // ---- v2 streets basemap (Insight 3): three <path>s by road class (local / major / fwy),
+  // drawn ABOVE the faint hood fills and BELOW dots + pin. Built once from sf_streets.json
+  // (data.loadStreets()); shown/hidden by class so re-entering the slide costs nothing.
+  setStreets(classes = {}) {
+    if (!this._streets) {
+      this._streets = document.createElementNS(SVGNS, 'g');
+      this._streets.setAttribute('class', 'map-streets');
+      this._svg.insertBefore(this._streets, this._dots);
+      for (const k of ['local', 'major', 'fwy']) {
+        if (!classes[k]) continue;
+        const p = document.createElementNS(SVGNS, 'path');
+        p.setAttribute('d', classes[k]);
+        p.setAttribute('class', `map-street map-street--${k}`);
+        this._streets.append(p);
+      }
     }
-    this._stipple.innerHTML = '';
-    const frag = document.createDocumentFragment();
-    for (const pt of points) {
-      const c = document.createElementNS(SVGNS, 'circle');
-      c.setAttribute('cx', pt.x.toFixed(1)); c.setAttribute('cy', pt.y.toFixed(1));
-      c.setAttribute('r', '1.6');
-      if (pt.calm) c.dataset.calm = '';
-      c.setAttribute('class', 'map-stipple__dot' + (pt.calm ? ' is-calm' : ''));
-      frag.append(c);
-    }
-    this._stipple.append(frag);
-    this._stipple.classList.add('is-on');   // CSS base hides the layer; this class shows it
+    this._streets.classList.add('is-on');
   }
-  // pale the calm dots (CSS transition animates fill/opacity from the lit base state)
-  paleStipple() {
-    requestAnimationFrame(() => this._stipple?.classList.add('is-paled'));
-  }
-  paleStippleNow() { this._stipple?.classList.add('is-paled', 'no-trans'); }
-  clearStipple() {
-    if (this._stipple) { this._stipple.classList.remove('is-paled', 'no-trans', 'is-on'); this._stipple.innerHTML = ''; }
-  }
+  clearStreets() { this._streets?.classList.remove('is-on'); }
 
-  // ---- v2 "dawn sweep" (Insight 3 option 1): the plane starts near-black, then hoods light
-  // up west→east as the count-up runs. Nightfall on enter, dawn sweep mid-card, clearDawn on exit.
-  // Keyframes must use CONCRETE colors — color-mix()/var() pairs inside WAAPI keyframes don't
-  // interpolate reliably, so we resolve the tokens to rgb here.
-  nightfall() {
-    this.dataset.style = 'dawn';                     // stops generic fill-clearing
-    const ink = this._resolveColor('var(--ink)', '#0c1014');
-    for (const p of Object.values(this._paths)) {
-      p.style.fill = ink;
-      p.style.stroke = 'rgba(235, 240, 245, 0.14)';
+  // ---- v2 photo dots (Insight 3): ONE DOT PER PHOTO, scattered deterministically inside its
+  // hex (seeded by the hex id, so the picture is stable across visits). The first `n_clean`
+  // dots of each hex carry is-clean. Dots pop in on a per-dot delay (--d); litDots() then
+  // turns the clean ones green on a second stagger (--g) while the 43% counts up — the
+  // picture and the number are the same measure: photos with nothing wrong at all.
+  setPhotoDots(hexes = [], hexR = 5) {
+    if (!this._photoDots) {
+      this._photoDots = document.createElementNS(SVGNS, 'g');
+      this._photoDots.setAttribute('class', 'map-photodots');
+      this._svg.insertBefore(this._photoDots, this._dots);
     }
-  }
-  _resolveColor(token, fallback) {
-    try { return getComputedStyle(this).getPropertyValue(token.replace(/^var\(|\)$/g, '').trim()).trim() || fallback; }
-    catch { return fallback; }
-  }
-  dawnSweep() {
-    if (this.dataset.style !== 'dawn') return;
-    const from = getComputedStyle(this).getPropertyValue('--ink').trim() || '#0c1014';
-    const accent = getComputedStyle(this).getPropertyValue('--map-hue').trim() || '#e0a526';
-    // alpha-blend the accent over the night color ourselves (accent 34% over ink ≈ readable glow)
-    const DURATION = 2600;                            // total sweep window (ms)
-    for (const [name, hd] of Object.entries(this._map.hoods)) {
-      const p = this._paths[name];
-      if (!p) continue;
-      const westness = hd.cx != null ? hd.cx / this._map.width : 0.5;
-      const delay = Math.round(westness * DURATION);
-      p.animate(
-        [{ fill: from }, { fill: accent }],
-        { duration: 900, delay, easing: 'ease-out', fill: 'forwards' })
-        .finished.then(() => {
-          // the glow is MOMENTARY — wash out to a whisper so the green hexes own the frame
-          p.animate(
-            [{ fill: accent, opacity: 0.82 }, { fill: from, opacity: 0.55 }],
-            { duration: 1400, easing: 'ease-in-out', fill: 'forwards' });
-        })
-        .catch(() => {});
-    }
-  }
-  clearDawn() {
-    for (const p of Object.values(this._paths)) {
-      p.getAnimations?.().forEach((a) => a.cancel());
-      p.style.fill = ''; p.style.stroke = ''; p.style.opacity = '';
-    }
-    if (this.dataset.style === 'dawn') this.dataset.style = 'outline';
-  }
-
-  // ---- v2 dawn hex-leaves: as the sweep wave passes, CALM hexes (n_severe === 0) pop in as
-  // small flat green hexes — "where the app looked and found clean streets." Severe hexes stay
-  // dark. Delay ∝ hex x (same west→east wave as the hood glow). One SVG group, WAAPI scale/fade.
-  dawnHexes(hexes = []) {
-    if (this.dataset.style !== 'dawn' || !hexes.length) return;
-    const NS = SVGNS;
-    if (!this._dawnHexes) {
-      this._dawnHexes = document.createElementNS(NS, 'g');
-      this._dawnHexes.setAttribute('class', 'map-dawn-hexes');
-      this._svg.insertBefore(this._dawnHexes, this._dots);
-    }
-    this._dawnHexes.innerHTML = '';
-    const meta = this._map.hex_r || 5;
-    const r = meta * 0.72;                       // slightly undersized → grout lines between hexes
-    const ANG = [0, 60, 120, 180, 240, 300].map((d) => d * Math.PI / 180);
-    const width = this._map.width;
-    const DURATION = 2600;
+    const g = this._photoDots;
+    g.innerHTML = '';
+    g.classList.remove('is-lit', 'no-trans');
     const frag = document.createDocumentFragment();
+    const R = hexR * 0.86;
+    let total = 0;
     for (const hx of hexes) {
-      if (hx.n_severe > 0) continue;             // severe hexes stay dark — the point
-      const westness = hx.x != null ? hx.x / width : 0.5;
-      const delay = Math.round(westness * DURATION);
-      const pts = ANG.map((a) => `${(hx.x + r * Math.cos(a)).toFixed(1)},${(hx.y + r * Math.sin(a)).toFixed(1)}`).join(' ');
-      const poly = document.createElementNS(NS, 'polygon');
-      poly.setAttribute('points', pts);
-      poly.setAttribute('class', 'map-dawn-hex');
-      poly.style.setProperty('--d', `${delay}ms`);
-      frag.append(poly);
+      const n = hx.n || 0, clean = Math.min(n, hx.n_clean || 0);
+      if (!n) continue;
+      let seed = fnv(hx.h3);
+      const rnd = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+      for (let i = 0; i < n; i++) {
+        const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * R;     // uniform in the disc
+        const c = document.createElementNS(SVGNS, 'circle');
+        c.setAttribute('cx', (hx.x + r * Math.cos(a)).toFixed(1));
+        c.setAttribute('cy', (hx.y + r * Math.sin(a)).toFixed(1));
+        c.setAttribute('r', '1.3');
+        c.setAttribute('class', i < clean ? 'map-photodot is-clean' : 'map-photodot');
+        c.style.setProperty('--d', `${Math.round(rnd() * 1500)}ms`);
+        if (i < clean) c.style.setProperty('--g', `${Math.round(rnd() * 1200)}ms`);
+        frag.append(c);
+        total++;
+      }
     }
-    this._dawnHexes.append(frag);
-    this._dawnHexes.classList.add('is-on');
+    g.append(frag);
+    g.classList.add('is-on');
+    return total;
   }
-  clearDawnHexes() {
-    if (this._dawnHexes) { this._dawnHexes.classList.remove('is-on'); this._dawnHexes.innerHTML = ''; }
+  litDots({ instant = false } = {}) {
+    if (!this._photoDots) return;
+    if (instant) this._photoDots.classList.add('no-trans');
+    requestAnimationFrame(() => this._photoDots?.classList.add('is-lit'));
   }
+  clearPhotoDots() {
+    if (this._photoDots) { this._photoDots.classList.remove('is-on', 'is-lit', 'no-trans'); this._photoDots.innerHTML = ''; }
+  }
+
+  // ---- pin at an arbitrary projected point (v2 Insight 2: the one block). The next
+  // apply()/setStyle() hides the pin again, so cards call this AFTER the camera lands.
+  pinAt(x, y) {
+    this._pin.setAttribute('cx', x); this._pin.setAttribute('cy', y);
+    this._pin.style.display = '';
+  }
+}
+
+// FNV-1a over a string → 32-bit seed for the per-hex dot scatter
+function fnv(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return h || 1;
 }
 
 customElements.define('condition-map', ConditionMap);

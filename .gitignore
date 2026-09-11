@@ -7,3 +7,6 @@ node_modules/
 
 # macOS
 .DS_Store
+
+# Build inputs pulled on demand (see wrapped/build/sources/streets.py)
+wrapped/data/raw/streets.geojson

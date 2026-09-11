@@ -1,7 +1,9 @@
-// Insight 3 — "A lot of streets are clean." The dawn sweep: the plane starts near-black
-// ("what a complaint ledger sees: nothing"), then calm neighborhoods light up west→east as
-// the 43% counts up — clean-ness washing across the city. Nightfall on enter, dawn mid-card,
-// everything restored on exit. (The dot-stipple version is parked in git history.)
+// Insight 3 — "A lot of streets are clean." A real street map, and ONE DOT PER PHOTO: all 6,094
+// drop onto the blocks where they were taken, then the 2,617 that found nothing wrong turn green
+// as the 43% counts up. Picture and number are the same measure (photos with no category rated
+// ≥ 1, Active Drug Use excluded — identical to the citywide clean share). Streets come from
+// sf_streets.json (DataSF centerlines, baked by make_map.py); dots from sf_map.json hexes (n,
+// n_clean). Same camera as slide 2 so this reads as "the same map, now showing what was found."
 import { CardBase } from './base-card.js';
 import * as data from '../data.js';
 import * as motion from '../motion.js';
@@ -20,20 +22,19 @@ class PaleoutCard extends CardBase {
     const panel = this.h('div', { class: 'panel paleout__panel' });
     panel.append(this.h('p', { class: 'kicker', text: s.kicker || '' }));
     panel.append(this.h('h2', { class: 'display', text: s.title || '' }));
-    // big number + inline sentence, one flowing line-pair: "43% of 6,094 photos found
-    // nothing wrong at all" — no orphan % stranded at a section break.
-    const num = this.h('span', { class: 'stat__num paleout__num' });
-    num.dataset.to = String(cleanShare);
-    num.textContent = '0';
-    this._num = num;
+    // big number + inline sentence, one flowing line-pair — no orphan % at a section break.
+    // Printed, not counted up: the map (dots dropping, then greening) carries the motion here.
+    const num = this.h('span', { class: 'stat__num paleout__num', text: `${cleanShare}%` });
     panel.append(this.h('p', { class: 'paleout__stat' },
       num,
       this.h('span', { class: 'paleout__statline' },
         `of ${tot.toLocaleString()} photos found `,
         this.h('strong', { text: 'nothing wrong at all' }))));
-    if (s.legend) panel.append(this.h('p', { class: 'paleout__legend', text: s.legend }));
+    // legend: the two dot colors on the map, with their counts — one dot per photo
+    panel.append(this.h('p', { class: 'paleout__legend' },
+      this.h('span', { class: 'paleout__key paleout__key--clean', text: `${clean.toLocaleString()} photos, nothing wrong` }),
+      this.h('span', { class: 'paleout__key paleout__key--flag', text: `${sig.toLocaleString()} photos, something flagged` })));
     if (s.body) panel.append(this.h('p', { class: 'beat__body', text: s.body }));
-    // bullet list (same shape as beat-card): [{ t: 'bold lead', d: 'rest' }]
     if (s.items?.length) {
       const ul = this.h('ul', { class: 'beat__items' });
       for (const it of s.items) {
@@ -46,7 +47,6 @@ class PaleoutCard extends CardBase {
       }
       panel.append(ul);
     }
-
     this._panel = panel;
     this.append(panel);
   }
@@ -54,28 +54,28 @@ class PaleoutCard extends CardBase {
   onEnter() {
     const map = document.querySelector('condition-map');
     motion.play('fade-up', this._panel);
-    if (this._num) motion.play('count-up', this._num, { to: Number(this._num.dataset.to), format: (v) => `${Math.round(v)}%` });
     motion.play('fly-in-stagger', this._panel, { selector: '.beat__items > li', step: 120 });
+    const reduced = motion.prefersReducedMotion();
     if (!map) return;
-    // 1) night falls, 2) the dawn sweep washes west→east, 3) green clean-hexes pop in behind it
-    map.nightfall();
-    if (motion.prefersReducedMotion()) {
-      // reduced motion: land directly on the lit end-state, no sweep
-      map.clearDawn();
-      map.apply({ rotate: 0, tilt: 54, style: 'filled' });
-      data.loadMap().then(() => map.dawnHexes(data.mapHexes())).catch(() => {});
-    } else {
-      setTimeout(() => map.dawnSweep(), 900);   // let nightfall land first
-      data.loadMap()
-        .then(() => setTimeout(() => map.dawnHexes(data.mapHexes()), 900))   // same wave, hex grain
-        .catch((e) => console.warn('dawn hexes failed', e));
-    }
+    const gen = (this._gen2 = (this._gen2 || 0) + 1);
+    // streets first (the ground), then the dots drop, then the clean ones turn green with the %
+    Promise.all([data.loadStreets().catch((e) => { console.warn('streets unavailable', e); return null; }), data.loadMap()])
+      .then(([streets]) => {
+        if (gen !== this._gen2 || !this.hasAttribute('active')) return;
+        if (streets) map.setStreets(streets.classes);
+        map.setPhotoDots(data.mapHexes(), data.mapMeta()?.hexR || 5);
+        if (reduced) { map.litDots({ instant: true }); return; }
+        this._t = setTimeout(() => { this._t = null; map.litDots(); }, 1500);
+      })
+      .catch((e) => console.warn('clean-streets map failed', e));
   }
 
   onExit() {
+    if (this._t) { clearTimeout(this._t); this._t = null; }
+    this._gen2 = (this._gen2 || 0) + 1;
     const map = document.querySelector('condition-map');
-    map?.clearDawn();
-    map?.clearDawnHexes();
+    map?.clearStreets();
+    map?.clearPhotoDots();
     return motion.play('fade-out', this);
   }
 }

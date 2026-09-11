@@ -22,7 +22,7 @@ import urllib.parse
 from collections import defaultdict
 from pathlib import Path
 
-DOMAIN = 'data.sfgov.org'
+DOMAIN = 'data.sf.gov'   # moved from data.sfgov.org (2026-09: old host 403s on $where queries)
 DATASET = 'vw6y-z8j6'
 ENDPOINT = f'https://{DOMAIN}/resource/{DATASET}.json'
 LIMIT = 50000
