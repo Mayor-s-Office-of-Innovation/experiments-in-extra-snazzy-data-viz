@@ -129,30 +129,27 @@
 .barpair__chip--a { background: color-mix(in srgb, var(--card-accent) 25%, transparent); }
 .barpair__chip--b { background: color-mix(in srgb, var(--card-fg) 18%, transparent); }
 .barpair__row { display: grid; gap: 0.3rem; min-width: 0; }
-/* the "same" row sits quiet and compact; the 311 row is the argument — bigger, louder.
-   --bar-w is capped relative to the panel (cqi): column 2 (count + hood tag) always keeps
-   its room, so labels/counts can't be pushed out of the clipped panel. */
-.barpair__row--same { --bar-w: clamp(90px, 42cqi, 200px); }
-.barpair__row--same .barpair__track { height: 0.95rem; opacity: 0.82; }
+/* the "same" row sits quiet and compact; the 311 row is the argument — bigger, louder */
+.barpair__row--same .barpair__zone { height: 0.95rem; opacity: 0.82; }
 .barpair__row--same .barpair__label { opacity: 0.65; }
 .barpair__row--hero {
   margin-top: 0.55rem; padding-top: 0.55rem;
   border-top: 1px solid color-mix(in srgb, var(--card-fg) 22%, transparent);
 }
-.barpair__row--hero { --bar-w: clamp(120px, 58cqi, 280px); }
 .barpair__row--hero .barpair__label { opacity: 1; font-weight: 700; }
-.barpair__row--hero .barpair__track { height: 1.7rem; }
+.barpair__row--hero .barpair__zone { height: 1.7rem; }
 .barpair__row--hero .barpair__num { font-size: var(--step-body); }
 .barpair__label { margin: 0; font-family: var(--font-mono); font-size: var(--step-kicker); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
-.barpair__bars { display: grid; gap: 0.25rem; }
-.barpair__track {
-  display: grid; grid-template-columns: var(--bar-w, 100px) auto;
-  align-items: center; gap: 0.6rem; height: 1.35rem; min-width: 0;
-  justify-content: start;
+.barpair__bars {
+  display: grid; grid-template-columns: minmax(2rem, 1fr) max-content max-content;
+  gap: 0.25rem 0.6rem; min-width: 0; align-items: center;
 }
-/* the plot zone: every bar's fill grows inside the same fixed-width column, so widths are
-   exact proportions of each other and can't be squeezed by the count/tag text */
-.barpair__zone { position: relative; grid-column: 1; width: var(--bar-w, 100px); height: 100%; }
+/* both bars share ONE grid (tracks are display:contents rows): the count/tag columns size to
+   the widest cell across BOTH bars, so the two 1fr zones are exactly equal and fill %s are
+   true proportions — and text can never be clipped; the bar shrinks instead. */
+.barpair__track { display: contents; }
+/* the plot zone: the fill grows inside the shared 1fr zone, width % is exact */
+.barpair__zone { position: relative; width: 100%; height: 1.35rem; }
 .barpair__zone .barpair__fill { position: absolute; inset-block: 0; left: 0; width: 0%; min-width: 0; }
 .barpair__fill { height: 100%; border-radius: 3px; width: 0%; }
 .barpair__track--a .barpair__fill { background: var(--card-accent); }
